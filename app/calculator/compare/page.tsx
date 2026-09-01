@@ -65,10 +65,15 @@ function CompareContent() {
     try {
       setIsExportingImage(true);
       const { toPng } = await import("html-to-image");
-      const dataUrl = await toPng(imageExportRef.current, {
+      const el = imageExportRef.current;
+
+      const dataUrl = await toPng(el, {
         quality: 0.98,
         pixelRatio: 2, // 2x high resolution for crystal clear WhatsApp sharing
         backgroundColor: "#ffffff",
+        width: 794,
+        height: el.scrollHeight || el.offsetHeight,
+        cacheBust: true,
       });
 
       const link = document.createElement("a");
@@ -1215,18 +1220,24 @@ function CompareContent() {
       {/* 3. OFF-SCREEN HIGH-RES CONTAINER FOR WHATSAPP IMAGE EXPORT */}
       {/* ============================================================ */}
       <div
-        ref={imageExportRef}
         style={{
-          position: "fixed",
-          left: "-9999px",
-          top: 0,
-          width: "794px", // exact A4 width at 96 DPI
-          background: "#ffffff",
-          zIndex: -1,
+          position: "relative",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          pointerEvents: "none",
         }}
         aria-hidden="true"
       >
-        <div className="p-3 bg-white">
+        <div
+          ref={imageExportRef}
+          style={{
+            width: "794px",
+            backgroundColor: "#ffffff",
+            position: "relative",
+          }}
+          className="p-3 bg-white text-slate-900"
+        >
           <ReportPage1Content
             results={results}
             input={input}
