@@ -1649,42 +1649,71 @@ function ReportPage1Content({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
-              {Array.from({
-                length: Math.min(input.tenorYears, 10),
-              }).map((_, yIdx) => {
-                const year = yIdx + 1;
+              {(() => {
+                const isLongTenor = input.tenorYears > 10;
+                const maxRows = 7;
+                const visibleCount = isLongTenor ? maxRows : Math.min(input.tenorYears, 10);
+
                 return (
-                  <tr key={year} className="even:bg-slate-50/70">
-                    <td className="p-0.5 font-bold text-slate-900 border-r border-slate-300">
-                      Thn {year}
-                    </td>
-                    {results.map((r) => {
-                      const schedule = r.yearlySchedule[yIdx];
-                      if (!schedule) {
-                        return (
-                          <td
-                            key={r.product.kode}
-                            colSpan={2}
-                            className="p-0.5 text-center text-slate-400 border-r border-slate-300"
-                          >
-                            -
-                          </td>
-                        );
-                      }
+                  <>
+                    {Array.from({ length: visibleCount }).map((_, yIdx) => {
+                      const year = yIdx + 1;
                       return (
-                        <React.Fragment key={r.product.kode}>
-                          <td className="p-0.5 text-right font-semibold text-slate-800 border-r border-slate-200">
-                            {formatPercent(schedule.rate)}
+                        <tr key={year} className="even:bg-slate-50/70">
+                          <td className="p-0.5 font-bold text-slate-900 border-r border-slate-300">
+                            Thn {year}
                           </td>
-                          <td className="p-0.5 text-right font-bold text-slate-900 border-r border-slate-300 last:border-r-0">
-                            {formatIDRFull(schedule.monthlyInstallment)}
-                          </td>
-                        </React.Fragment>
+                          {results.map((r) => {
+                            const schedule = r.yearlySchedule[yIdx];
+                            if (!schedule) {
+                              return (
+                                <td
+                                  key={r.product.kode}
+                                  colSpan={2}
+                                  className="p-0.5 text-center text-slate-400 border-r border-slate-300"
+                                >
+                                  -
+                                </td>
+                              );
+                            }
+                            return (
+                              <React.Fragment key={r.product.kode}>
+                                <td className="p-0.5 text-right font-semibold text-slate-800 border-r border-slate-200">
+                                  {formatPercent(schedule.rate)}
+                                </td>
+                                <td className="p-0.5 text-right font-bold text-slate-900 border-r border-slate-300 last:border-r-0">
+                                  {formatIDRFull(schedule.monthlyInstallment)}
+                                </td>
+                              </React.Fragment>
+                            );
+                          })}
+                        </tr>
                       );
                     })}
-                  </tr>
+
+                    {isLongTenor && (
+                      <tr className="bg-amber-50/60 font-semibold text-slate-900 border-t border-slate-300">
+                        <td className="p-0.5 font-bold text-slate-800 border-r border-slate-300 text-[6.5px]">
+                          Thn {maxRows + 1}-{input.tenorYears} (Float)
+                        </td>
+                        {results.map((r) => {
+                          const lastSchedule = r.yearlySchedule[r.yearlySchedule.length - 1];
+                          return (
+                            <React.Fragment key={r.product.kode}>
+                              <td className="p-0.5 text-right font-bold text-amber-900 border-r border-slate-200">
+                                {formatPercent(r.floatingRate)}
+                              </td>
+                              <td className="p-0.5 text-right font-bold text-slate-900 border-r border-slate-300 last:border-r-0">
+                                {formatIDRFull(lastSchedule?.monthlyInstallment || 0)}
+                              </td>
+                            </React.Fragment>
+                          );
+                        })}
+                      </tr>
+                    )}
+                  </>
                 );
-              })}
+              })()}
             </tbody>
             <tfoot>
               <tr className="bg-slate-200 font-bold border-t border-slate-300 text-[7.5px]">
