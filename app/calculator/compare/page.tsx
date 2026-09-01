@@ -1233,6 +1233,7 @@ function CompareContent() {
           ref={imageExportRef}
           style={{
             width: "794px",
+            height: "1123px",
             backgroundColor: "#ffffff",
             position: "relative",
           }}
@@ -1262,9 +1263,9 @@ function ReportPage1Content({
   visibility: any;
 }) {
   return (
-    <div className="space-y-3 print:space-y-2.5 bg-white text-slate-900">
+    <div className="h-[280mm] max-h-[280mm] flex flex-col justify-between bg-white text-slate-900 print:break-inside-avoid print:page-break-inside-avoid">
       {/* Top Dark Navy Hero Banner with Decorative Curved Accents */}
-      <div className="bg-[#0B2545] rounded-xl p-4 text-white relative overflow-hidden shadow-xs">
+      <div className="bg-[#0B2545] rounded-xl p-4 text-white relative overflow-hidden shadow-xs shrink-0">
         {/* Decorative Curved Wave/Circles */}
         <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-teal-400/20 pointer-events-none" />
         <div className="absolute top-1 -right-3 w-28 h-28 rounded-full bg-cyan-300/25 pointer-events-none" />
@@ -1334,7 +1335,7 @@ function ReportPage1Content({
       </div>
 
       {/* 3 Option Hero Cards (Middle Section) */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3 shrink-0">
         {results.map((res, idx) => {
           const s = res.savings;
           const isSaved = s && s.totalSaved > 0;
@@ -1411,7 +1412,7 @@ function ReportPage1Content({
       </div>
 
       {/* Comparison Matrix Table (Bottom Section) */}
-      <div className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xs">
+      <div className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xs shrink-0">
         <table className="w-full text-[8.5px] border-collapse">
           <thead>
             <tr className="bg-[#0B2545] text-white text-[8px] uppercase tracking-wider font-bold">
@@ -1599,7 +1600,7 @@ function ReportPage1Content({
 
       {/* Table 2: Side-by-Side Annual Schedule Table (If enabled) */}
       {visibility.showUnifiedSchedulePrint && (
-        <div className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xs">
+        <div className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xs shrink-0">
           <div className="px-3 py-1 bg-slate-100 border-b border-slate-300 flex items-center justify-between">
             <h3 className="font-bold text-slate-900 text-[9px]">
               Perbandingan Jadwal Angsuran Tahunan (Side-by-Side 3 Opsi Program)
@@ -1736,7 +1737,7 @@ function ReportPage1Content({
       )}
 
       {/* Official NOTE & 6 Biaya Bank */}
-      <div className="bg-slate-50 rounded-xl border border-slate-300 p-2 space-y-1 text-[7.5px] text-slate-700 print:break-inside-avoid shadow-2xs">
+      <div className="bg-slate-50 rounded-xl border border-slate-300 p-2.5 space-y-1 text-[7.5px] text-slate-700 print:break-inside-avoid shadow-2xs shrink-0">
         <div className="flex items-center justify-between pb-0.5 border-b border-slate-200">
           <span className="font-extrabold text-[#0B2545] text-[8px] tracking-wide uppercase flex items-center gap-1">
             <Info className="w-2.5 h-2.5 text-[#0B2545]" />
