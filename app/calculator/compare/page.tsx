@@ -1262,14 +1262,14 @@ function ReportPage1Content({
   visibility: any;
 }) {
   return (
-    <div className="space-y-2.5 print:space-y-2 bg-white text-slate-900">
+    <div className="space-y-3 print:space-y-2.5 bg-white text-slate-900">
       {/* Top Dark Navy Hero Banner with Decorative Curved Accents */}
-      <div className="bg-[#0B2545] rounded-xl p-3.5 text-white relative overflow-hidden shadow-xs">
+      <div className="bg-[#0B2545] rounded-xl p-4 text-white relative overflow-hidden shadow-xs">
         {/* Decorative Curved Wave/Circles */}
-        <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-teal-400/20 pointer-events-none" />
-        <div className="absolute top-1 -right-3 w-24 h-24 rounded-full bg-cyan-300/25 pointer-events-none" />
+        <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-teal-400/20 pointer-events-none" />
+        <div className="absolute top-1 -right-3 w-28 h-28 rounded-full bg-cyan-300/25 pointer-events-none" />
 
-        <div className="relative z-10 space-y-2">
+        <div className="relative z-10 space-y-2.5">
           {/* Header Top Row: Official Logo & Report Badge */}
           <div className="flex items-center justify-between pb-1 border-b border-white/15">
             <Rumah123Logo variant="white" size="sm" />
@@ -1285,7 +1285,7 @@ function ReportPage1Content({
             <h1 className="text-base sm:text-lg font-extrabold text-white tracking-tight leading-tight">
               Mortgage Comparison Report
             </h1>
-            <p className="text-[7.5px] text-blue-200/90 font-medium">
+            <p className="text-[8px] text-blue-200/90 font-medium">
               Disiapkan khusus oleh Tim Mortgage Rumah123 untuk Nasabah •{" "}
               {new Date().toLocaleDateString("id-ID", {
                 day: "numeric",
@@ -1296,34 +1296,34 @@ function ReportPage1Content({
           </div>
 
           {/* 3 Parameter Stats in Dark Banner */}
-          <div className="grid grid-cols-3 gap-2 pt-1.5 border-t border-white/15 text-xs">
+          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/15 text-xs">
             <div className="pr-2">
-              <span className="text-[7.5px] text-blue-200 font-semibold block uppercase tracking-wider">
+              <span className="text-[8px] text-blue-200 font-semibold block uppercase tracking-wider">
                 Total Plafond
               </span>
-              <span className="text-xs sm:text-sm font-extrabold text-white block mt-0.5">
+              <span className="text-sm font-extrabold text-white block mt-0.5">
                 {formatIDRFull(input.plafond + (input.topUp || 0))}
               </span>
             </div>
             <div className="border-l border-white/20 px-2.5">
-              <span className="text-[7.5px] text-blue-200 font-semibold block uppercase tracking-wider">
+              <span className="text-[8px] text-blue-200 font-semibold block uppercase tracking-wider">
                 {input.kprType === "Take Over"
                   ? "Est. Biaya Take Over (5%)"
                   : "Uang Muka (DP)"}
               </span>
-              <span className="text-xs sm:text-sm font-extrabold text-white block mt-0.5">
+              <span className="text-sm font-extrabold text-white block mt-0.5">
                 {input.kprType === "Take Over"
                   ? formatIDRFull((input.currentOutstanding || 0) * 0.05)
                   : `${formatIDRFull(((input.propertyPrice || 0) * (input.dpPercent || 0)) / 100)} (${input.dpPercent || 0}%)`}
               </span>
             </div>
             <div className="border-l border-white/20 pl-2.5">
-              <span className="text-[7.5px] text-blue-200 font-semibold block uppercase tracking-wider">
+              <span className="text-[8px] text-blue-200 font-semibold block uppercase tracking-wider">
                 {input.kprType === "Take Over"
                   ? "Current Monthly Installment"
                   : "Tenor Pinjaman"}
               </span>
-              <span className="text-xs sm:text-sm font-extrabold text-white block mt-0.5">
+              <span className="text-sm font-extrabold text-white block mt-0.5">
                 {input.kprType === "Take Over"
                   ? `${formatIDRFull(input.currentMonthlyInstallment || 0)}/bln`
                   : `${input.tenorYears} Tahun`}
@@ -1334,7 +1334,7 @@ function ReportPage1Content({
       </div>
 
       {/* 3 Option Hero Cards (Middle Section) */}
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-3 gap-3">
         {results.map((res, idx) => {
           const s = res.savings;
           const isSaved = s && s.totalSaved > 0;
@@ -1370,37 +1370,37 @@ function ReportPage1Content({
               className="bg-white rounded-xl border border-slate-300 shadow-xs overflow-hidden flex flex-col"
             >
               {/* Top Gray Tab */}
-              <div className="bg-slate-200/90 py-1 px-2.5 text-center border-b border-slate-300">
-                <span className="font-bold text-slate-800 text-[9.5px]">
+              <div className="bg-slate-200/90 py-1 px-3 text-center border-b border-slate-300">
+                <span className="font-bold text-slate-800 text-[10px]">
                   {optionTitle}
                 </span>
               </div>
 
               {/* Card Content Body */}
-              <div className="p-2.5 text-center space-y-1.5 flex-1 flex flex-col justify-between">
+              <div className="p-3 text-center space-y-2 flex-1 flex flex-col justify-between">
                 <div>
-                  <span className="text-[7.5px] text-slate-500 font-semibold block uppercase tracking-wider">
+                  <span className="text-[8px] text-slate-500 font-semibold block uppercase tracking-wider">
                     Promo interest rate
                   </span>
-                  <span className="text-xl sm:text-2xl font-black text-[#0B2545] tracking-tight block mt-0.5">
+                  <span className="text-2xl font-black text-[#0B2545] tracking-tight block mt-0.5">
                     {rateDisplay}
                   </span>
                 </div>
 
-                <div className="border-t border-slate-100 pt-1">
-                  <span className="text-[7.5px] text-slate-500 font-semibold block uppercase tracking-wider">
+                <div className="border-t border-slate-100 pt-1.5">
+                  <span className="text-[8px] text-slate-500 font-semibold block uppercase tracking-wider">
                     Initial monthly payment
                   </span>
-                  <span className="text-[11px] font-extrabold text-slate-900 block mt-0.5">
+                  <span className="text-xs font-extrabold text-slate-900 block mt-0.5">
                     {formatIDRFull(res.fixPeriodMonthlyInstallment)}
                   </span>
                 </div>
 
-                <div className="border-t border-slate-100 pt-1">
-                  <span className="text-[7.5px] text-slate-500 font-semibold block uppercase tracking-wider mb-0.5">
+                <div className="border-t border-slate-100 pt-1.5">
+                  <span className="text-[8px] text-slate-500 font-semibold block uppercase tracking-wider mb-1">
                     {savingsLabel}
                   </span>
-                  <div className="bg-[#00A86B] text-white font-extrabold text-[8.5px] py-1 px-2 rounded-full inline-block shadow-2xs">
+                  <div className="bg-[#00A86B] text-white font-extrabold text-[9px] py-1 px-2.5 rounded-full inline-block shadow-2xs">
                     {savingsValue}
                   </div>
                 </div>
@@ -1412,16 +1412,16 @@ function ReportPage1Content({
 
       {/* Comparison Matrix Table (Bottom Section) */}
       <div className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xs">
-        <table className="w-full text-[8px] border-collapse">
+        <table className="w-full text-[8.5px] border-collapse">
           <thead>
-            <tr className="bg-[#0B2545] text-white text-[7.5px] uppercase tracking-wider font-bold">
-              <th className="px-2.5 py-1 text-left w-[28%] border-r border-blue-900/60">
+            <tr className="bg-[#0B2545] text-white text-[8px] uppercase tracking-wider font-bold">
+              <th className="px-3 py-1.5 text-left w-[28%] border-r border-blue-900/60">
                 Parameter / Name
               </th>
               {results.map((r, i) => (
                 <th
                   key={r.product.kode}
-                  className="px-2 py-1 text-right w-[24%] border-r border-blue-900/60 last:border-r-0"
+                  className="px-2.5 py-1.5 text-right w-[24%] border-r border-blue-900/60 last:border-r-0"
                 >
                   {visibility.maskBankNames ? `Option ${i + 1}` : r.product.bank}
                 </th>
@@ -1431,13 +1431,13 @@ function ReportPage1Content({
           <tbody className="divide-y divide-slate-200">
             {/* Row 1: Plafond */}
             <tr className="even:bg-slate-50/70">
-              <td className="px-2.5 py-0.5 font-semibold text-slate-700 border-r border-slate-200">
+              <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
                 Plafond
               </td>
               {results.map((r) => (
                 <td
                   key={r.product.kode}
-                  className="px-2 py-0.5 text-right font-medium text-slate-900 border-r border-slate-200 last:border-r-0"
+                  className="px-2.5 py-1 text-right font-medium text-slate-900 border-r border-slate-200 last:border-r-0"
                 >
                   {formatIDRFull(input.plafond)}
                 </td>
@@ -1446,13 +1446,13 @@ function ReportPage1Content({
 
             {/* Row 2: Total Plafond Baru */}
             <tr className="even:bg-slate-50/70">
-              <td className="px-2.5 py-0.5 font-semibold text-slate-700 border-r border-slate-200">
+              <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
                 Total Plafond Baru
               </td>
               {results.map((r) => (
                 <td
                   key={r.product.kode}
-                  className="px-2 py-0.5 text-right font-bold text-slate-900 border-r border-slate-200 last:border-r-0"
+                  className="px-2.5 py-1 text-right font-bold text-slate-900 border-r border-slate-200 last:border-r-0"
                 >
                   {formatIDRFull(input.plafond + (input.topUp || 0))}
                 </td>
@@ -1462,13 +1462,13 @@ function ReportPage1Content({
             {/* Row 3: Biaya Take Over (5%) */}
             {input.kprType === "Take Over" && (
               <tr className="even:bg-slate-50/70">
-                <td className="px-2.5 py-0.5 font-semibold text-slate-700 border-r border-slate-200">
+                <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
                   Est. Biaya Take Over (5%)
                 </td>
                 {results.map((r) => (
                   <td
                     key={r.product.kode}
-                    className="px-2 py-0.5 text-right font-medium text-amber-800 border-r border-slate-200 last:border-r-0"
+                    className="px-2.5 py-1 text-right font-medium text-amber-800 border-r border-slate-200 last:border-r-0"
                   >
                     {formatIDRFull((input.currentOutstanding || 0) * 0.05)}
                   </td>
@@ -1479,13 +1479,13 @@ function ReportPage1Content({
             {/* Row 4: Current Monthly Installment */}
             {input.kprType === "Take Over" && (
               <tr className="even:bg-slate-50/70">
-                <td className="px-2.5 py-0.5 font-semibold text-slate-700 border-r border-slate-200">
+                <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
                   Current Monthly Installment
                 </td>
                 {results.map((r) => (
                   <td
                     key={r.product.kode}
-                    className="px-2 py-0.5 text-right font-semibold text-slate-900 border-r border-slate-200 last:border-r-0"
+                    className="px-2.5 py-1 text-right font-semibold text-slate-900 border-r border-slate-200 last:border-r-0"
                   >
                     {formatIDRFull(input.currentMonthlyInstallment || 0)}/bln
                   </td>
@@ -1495,16 +1495,16 @@ function ReportPage1Content({
 
             {/* Row 5: Promo Interest Rates */}
             <tr className="even:bg-slate-50/70">
-              <td className="px-2.5 py-0.5 font-semibold text-slate-700 border-r border-slate-200">
+              <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
                 Promo Interest Rates
               </td>
               {results.map((r) => (
                 <td
                   key={r.product.kode}
-                  className="px-2 py-0.5 text-right font-bold text-[#0B2545] border-r border-slate-200 last:border-r-0"
+                  className="px-2.5 py-1 text-right font-bold text-[#0B2545] border-r border-slate-200 last:border-r-0"
                 >
                   {formatPercent(r.product.rates[0])}{" "}
-                  <span className="text-[7px] font-normal text-slate-500">
+                  <span className="text-[7.5px] font-normal text-slate-500">
                     (
                     {r.product.jenisBunga === "Berjenjang"
                       ? "Step-Up"
@@ -1519,13 +1519,13 @@ function ReportPage1Content({
 
             {/* Row 6: Initial Monthly Payment */}
             <tr className="even:bg-slate-50/70">
-              <td className="px-2.5 py-0.5 font-semibold text-slate-700 border-r border-slate-200">
+              <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
                 Initial Monthly Payment
               </td>
               {results.map((r) => (
                 <td
                   key={r.product.kode}
-                  className="px-2 py-0.5 text-right font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0"
+                  className="px-2.5 py-1 text-right font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0"
                 >
                   {formatIDRFull(r.fixPeriodMonthlyInstallment)}
                 </td>
@@ -1534,7 +1534,7 @@ function ReportPage1Content({
 
             {/* Row 7: Est. Total Jika Pindah / Total Bayar */}
             <tr className="even:bg-slate-50/70">
-              <td className="px-2.5 py-0.5 font-semibold text-slate-700 border-r border-slate-200">
+              <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
                 {input.kprType === "Take Over"
                   ? "Est. Total Jika Pindah"
                   : `Total Bayar (${input.tenorYears} Th)`}
@@ -1544,7 +1544,7 @@ function ReportPage1Content({
                 return (
                   <td
                     key={r.product.kode}
-                    className="px-2 py-0.5 text-right font-medium text-slate-800 border-r border-slate-200 last:border-r-0"
+                    className="px-2.5 py-1 text-right font-medium text-slate-800 border-r border-slate-200 last:border-r-0"
                   >
                     {input.kprType === "Take Over" && s
                       ? formatIDRFull(s.newTotalPayment)
@@ -1556,7 +1556,7 @@ function ReportPage1Content({
 
             {/* Row 8: Total Net Savings / Hemat Bulanan (Highlight Row) */}
             <tr className="bg-slate-100 font-extrabold text-[#0B2545] border-t-2 border-slate-300">
-              <td className="px-2.5 py-1 uppercase tracking-wide text-[8.5px] border-r border-slate-300">
+              <td className="px-3 py-1.5 uppercase tracking-wide text-[9px] border-r border-slate-300">
                 {input.kprType === "Take Over" &&
                 results.some((r) => r.savings && r.savings.totalSaved > 0)
                   ? "Total Net Savings"
@@ -1586,7 +1586,7 @@ function ReportPage1Content({
                 return (
                   <td
                     key={r.product.kode}
-                    className="px-2 py-1 text-right font-black text-[9px] border-r border-slate-300 last:border-r-0 text-emerald-800"
+                    className="px-2.5 py-1.5 text-right font-black text-[9.5px] border-r border-slate-300 last:border-r-0 text-emerald-800"
                   >
                     {displaySavings}
                   </td>
@@ -1600,8 +1600,8 @@ function ReportPage1Content({
       {/* Table 2: Side-by-Side Annual Schedule Table (If enabled) */}
       {visibility.showUnifiedSchedulePrint && (
         <div className="bg-white rounded-xl border border-slate-300 overflow-hidden shadow-xs">
-          <div className="px-2.5 py-0.5 bg-slate-100 border-b border-slate-300 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 text-[8.5px]">
+          <div className="px-3 py-1 bg-slate-100 border-b border-slate-300 flex items-center justify-between">
+            <h3 className="font-bold text-slate-900 text-[9px]">
               Perbandingan Jadwal Angsuran Tahunan (Side-by-Side 3 Opsi Program)
             </h3>
             <span className="text-[7px] font-medium text-slate-500">
@@ -1609,22 +1609,22 @@ function ReportPage1Content({
             </span>
           </div>
 
-          <table className="w-full text-[7.5px] border-collapse">
+          <table className="w-full text-[8px] border-collapse">
             <thead>
               <tr className="bg-slate-200 text-slate-900 border-b border-slate-300 font-bold">
-                <th className="p-0.5 text-left border-r border-slate-300 w-10">
+                <th className="p-1 text-left border-r border-slate-300 w-12">
                   Tahun
                 </th>
                 {results.map((r, i) => (
                   <th
                     key={r.product.kode}
-                    className="p-0.5 text-center border-r border-slate-300 last:border-r-0"
+                    className="p-1 text-center border-r border-slate-300 last:border-r-0"
                     colSpan={2}
                   >
-                    <div className="font-bold text-slate-900 text-[8px]">
+                    <div className="font-bold text-slate-900 text-[8.5px]">
                       {visibility.maskBankNames ? `Option ${i + 1}` : r.product.bank}
                     </div>
-                    <span className="text-[6.5px] text-slate-500 font-normal block truncate max-w-[120px] mx-auto">
+                    <span className="text-[7px] text-slate-500 font-normal block truncate max-w-[130px] mx-auto">
                       {visibility.maskBankNames
                         ? `Program KPR Opsi ${i + 1}`
                         : r.product.nama}
@@ -1632,7 +1632,7 @@ function ReportPage1Content({
                   </th>
                 ))}
               </tr>
-              <tr className="bg-slate-100 text-slate-700 border-b border-slate-300 text-[6.5px] font-semibold">
+              <tr className="bg-slate-100 text-slate-700 border-b border-slate-300 text-[7px] font-semibold">
                 <th className="p-0.5 text-left border-r border-slate-300">
                   Periode
                 </th>
@@ -1651,7 +1651,7 @@ function ReportPage1Content({
             <tbody className="divide-y divide-slate-200">
               {(() => {
                 const isLongTenor = input.tenorYears > 10;
-                const maxRows = 7;
+                const maxRows = 9;
                 const visibleCount = isLongTenor ? maxRows : Math.min(input.tenorYears, 10);
 
                 return (
@@ -1693,7 +1693,7 @@ function ReportPage1Content({
 
                     {isLongTenor && (
                       <tr className="bg-amber-50/60 font-semibold text-slate-900 border-t border-slate-300">
-                        <td className="p-0.5 font-bold text-slate-800 border-r border-slate-300 text-[6.5px]">
+                        <td className="p-0.5 font-bold text-slate-800 border-r border-slate-300 text-[7px]">
                           Thn {maxRows + 1}-{input.tenorYears} (Float)
                         </td>
                         {results.map((r) => {
@@ -1716,15 +1716,15 @@ function ReportPage1Content({
               })()}
             </tbody>
             <tfoot>
-              <tr className="bg-slate-200 font-bold border-t border-slate-300 text-[7.5px]">
-                <td className="p-0.5 text-slate-900 border-r border-slate-300">
+              <tr className="bg-slate-200 font-bold border-t border-slate-300 text-[8px]">
+                <td className="p-1 text-slate-900 border-r border-slate-300">
                   Total Bayar
                 </td>
                 {results.map((r) => (
                   <td
                     key={r.product.kode}
                     colSpan={2}
-                    className="p-0.5 text-right text-slate-900 font-extrabold border-r border-slate-300 last:border-r-0"
+                    className="p-1 text-right text-slate-900 font-extrabold border-r border-slate-300 last:border-r-0"
                   >
                     {formatIDRFull(r.totalInstallmentAll)}
                   </td>
