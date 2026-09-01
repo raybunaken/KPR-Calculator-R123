@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KPR Calculator Web - Rumah123
 
-## Getting Started
+Simulasi KPR interaktif berbasis web, menggantikan Google Sheets Calculator.
 
-First, run the development server:
+## Tech Stack
+- **Next.js 14** (App Router) + TypeScript
+- **Tailwind CSS** - styling
+- **Recharts** - grafik amortisasi interaktif  
+- **Google Sheets API** - source of truth data bunga bank
+- **Vercel** - deployment (free tier)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Struktur Project
+
+```
+kpr-web/
+├── app/
+│   ├── page.tsx              # Landing page
+│   ├── calculator/page.tsx   # Halaman kalkulator
+│   └── api/products/route.ts # API endpoint data bank (cached ISR)
+├── components/calculator/
+│   ├── LoanForm.tsx          # Form input nasabah
+│   ├── SimulationResults.tsx # Hasil simulasi + perbandingan
+│   ├── AmortizationChart.tsx # Grafik cicilan per tahun
+│   └── AmortizationTable.tsx # Tabel amortisasi detail
+├── lib/
+│   ├── types.ts              # TypeScript types
+│   ├── calculator.ts         # Engine hitung amortisasi
+│   ├── rac.ts                # Eligibility checker per bank
+│   └── sheets.ts             # Google Sheets API client
+└── data/
+    └── bank-products.json    # Static fallback data (490 produk)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Setup environment variables** — buat file `.env.local`:
+   ```
+   GOOGLE_SERVICE_ACCOUNT_JSON=<isi JSON service account lengkap>
+   GOOGLE_SPREADSHEET_ID=1GQZAg6iJG3PRim8gts4MfElafZ4uu2Fx5bUojVabWPY
+   ```
 
-## Learn More
+3. **Run dev server**
+   ```bash
+   npm run dev
+   ```
+   Buka http://localhost:3000
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy ke Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Langkah 1: Push ke GitHub
+```bash
+git add .
+git commit -m "KPR Calculator MVP"
+git remote add origin https://github.com/[username]/kpr-calculator
+git push -u origin main
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Langkah 2: Import di Vercel
+1. Buka https://vercel.com/new
+2. Import repository dari GitHub
+3. **Set environment variables** di Vercel dashboard:
+   - `GOOGLE_SERVICE_ACCOUNT_JSON` — paste isi file JSON service account (satu baris)
+   - `GOOGLE_SPREADSHEET_ID` — `1GQZAg6iJG3PRim8gts4MfElafZ4uu2Fx5bUojVabWPY`
+4. Deploy!
 
-## Deploy on Vercel
+> ⚠️ **Penting**: Jangan commit `.env.local` ke Git. File ini sudah ada di `.gitignore`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Update Data Bunga
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Data bunga bank diambil **langsung dari Google Sheets** dan di-cache selama 1 jam di Vercel.
+
+**Cara update bunga:**
+1. Buka Google Sheets "Calculator KPR Rumah123 2026"
+2. Update sheet `INDEX` kolom bunga (kolom N dst)
+3. Web akan otomatis pickup perubahan dalam maks. 1 jam
+4. Atau force refresh dengan trigger redeploy di Vercel
+
+## Fitur Kalkulator
+
+### Input
+- Tipe KPR: Primary, Secondary, Take Over, Multiguna
+- Jenis: Konvensional / Syariah
+- Harga properti + DP slider
+- Tenor 5–30 tahun
+- Status karyawan + income (untuk validasi 35% rule)
+- Area (untuk eligibility per bank)
+- Ready Dana
+
+### Take Over
+- Input sisa outstanding + cicilan saat ini
+- Kalkulasi estimasi penalti
+- Perbandingan total angsuran vs bank lama
+
+### Output
+- Ranking produk termurah (eligible vs tidak eligible)
+- Cicilan fixed period & floating per bulan
+- Total angsuran selama tenor
+- Total bunga yang dibayar
+- Grafik cicilan per tahun (Recharts)
+- Tabel amortisasi detail per tahun
+
+## Lisensi
+Internal tool Rumah123 — tidak untuk distribusi publik.
