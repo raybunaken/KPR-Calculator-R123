@@ -229,18 +229,6 @@ function CompareContent() {
               )}
             </button>
 
-            {/* Download PNG */}
-            <button
-              type="button"
-              onClick={handleDownloadImage}
-              disabled={isExportingImage}
-              className="text-xs px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
-              title="Download Gambar PNG Resolusi Tinggi untuk WhatsApp"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>{isExportingImage ? "Memproses..." : "Download Foto"}</span>
-            </button>
-
             {/* Cetak PDF */}
             <button
               type="button"
@@ -379,6 +367,17 @@ function CompareContent() {
                   className="text-blue-600 hover:underline cursor-pointer"
                 >
                   Reset Ringkas
+                </button>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={handleDownloadImage}
+                  disabled={isExportingImage}
+                  className="text-emerald-700 hover:underline font-medium cursor-pointer disabled:opacity-50 flex items-center gap-1"
+                  title="Download format gambar PNG untuk WhatsApp"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>{isExportingImage ? "Memproses..." : "Download Foto (PNG)"}</span>
                 </button>
               </div>
             </div>
@@ -2065,18 +2064,6 @@ export default function ComparePage() {
             >
               <Rumah123Logo withTagline={true} />
             </Link>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Cetak / Simpan PDF CTA */}
-            <button
-              onClick={() => window.print()}
-              className="flex items-center gap-2 bg-[#00438F] hover:bg-[#003366] active:bg-[#092147] text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
-              title="Cetak atau Simpan sebagai PDF"
-            >
-              <Printer className="w-4 h-4" />
-              <span>Cetak / Simpan PDF</span>
-            </button>
           </div>
         </div>
       </header>
