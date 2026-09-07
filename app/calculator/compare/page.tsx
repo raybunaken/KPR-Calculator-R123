@@ -191,7 +191,7 @@ function CompareContent() {
   const activeResult = results[activeTab] || results[0];
 
   return (
-    <div className="mt-6 print:mt-2 space-y-6 print:space-y-4">
+    <div className="mt-6 print:mt-0 space-y-6 print:space-y-0">
       {/* Telemarketer Visibility Control Toolbar (Web-Only) */}
       <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 print:hidden space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1487,6 +1487,7 @@ function CompareContent() {
       {/* 3. OFF-SCREEN HIGH-RES CONTAINER FOR WHATSAPP IMAGE EXPORT */}
       {/* ============================================================ */}
       <div
+        className="print:hidden"
         style={{
           position: "relative",
           width: 0,

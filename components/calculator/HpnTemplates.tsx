@@ -11,7 +11,7 @@ export function HpnCoverPage({
   const displayPromo = promoValidUntil.trim() || "31 Oktober 2026";
 
   return (
-    <div className="relative w-full h-[282mm] max-h-[282mm] overflow-hidden bg-[#0B2545] text-white print:break-inside-avoid print:page-break-inside-avoid print:break-after-page rounded-2xl shadow-xs print:rounded-none print:shadow-none select-none">
+    <div className="relative w-full h-[280mm] max-h-[280mm] overflow-hidden bg-[#0B2545] text-white print:break-inside-avoid print:page-break-inside-avoid rounded-2xl shadow-xs print:rounded-none print:shadow-none select-none">
       {/* Gambar template resmi langsung dari PDF brief sebagai elemen img DOM agar 100% tercetak dan tidak hilang di print preview browser */}
       <img
         src="/hpn-cover-clean.png"
@@ -46,7 +46,7 @@ export function HpnBackCoverPage({
   const displayPhone = picPhone.trim() || "0822 1234 1234";
 
   return (
-    <div className="relative w-full h-[282mm] max-h-[282mm] overflow-hidden bg-[#0B2545] text-white print:break-inside-avoid print:page-break-inside-avoid print:break-before-page rounded-2xl shadow-xs print:rounded-none print:shadow-none select-none">
+    <div className="relative w-full h-[280mm] max-h-[280mm] overflow-hidden bg-[#0B2545] text-white print:break-inside-avoid print:page-break-inside-avoid print:break-before-page rounded-2xl shadow-xs print:rounded-none print:shadow-none select-none">
       {/* Gambar template penutup resmi langsung dari PDF brief sebagai elemen img DOM */}
       <img
         src="/hpn-backcover-clean.png"
