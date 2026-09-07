@@ -11,12 +11,12 @@ export function HpnCoverPage({
   const displayPromo = promoValidUntil.trim() || "31 Oktober 2026";
 
   return (
-    <div className="relative w-full aspect-[210/297] print:aspect-auto print:w-full print:h-[285mm] print:max-h-[285mm] overflow-hidden bg-[#0B2545] text-white print:break-inside-avoid print:page-break-inside-avoid rounded-xl shadow-md print:rounded-none print:shadow-none select-none">
+    <div className="relative w-full aspect-[210/297] print:aspect-auto print:w-full print:h-[285mm] print:max-h-[285mm] overflow-hidden bg-[#2851A3] text-white print:break-inside-avoid print:page-break-inside-avoid rounded-xl shadow-md print:rounded-none print:shadow-none select-none">
       {/* Gambar template resmi langsung dari PDF brief sebagai elemen img DOM agar 100% tercetak dan tidak hilang di print preview browser */}
       <img
         src="/hpn-cover-clean.png"
         alt="Cover HPN 2026"
-        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+        className="absolute inset-0 w-full h-full object-fill pointer-events-none"
       />
 
       {/* Teks nama nasabah dan tanggal promo diposisikan presisi pada slot brief dalam 1 blok yang sama sehingga 100% rata kiri sejajar */}
@@ -46,12 +46,12 @@ export function HpnBackCoverPage({
   const displayPhone = picPhone.trim() || "0822 1234 1234";
 
   return (
-    <div className="relative w-full aspect-[210/297] print:aspect-auto print:w-full print:h-[285mm] print:max-h-[285mm] overflow-hidden bg-[#0B2545] text-white print:break-inside-avoid print:page-break-inside-avoid print:break-before-page rounded-xl shadow-md print:rounded-none print:shadow-none select-none">
+    <div className="relative w-full aspect-[210/297] print:aspect-auto print:w-full print:h-[285mm] print:max-h-[285mm] overflow-hidden bg-[#2851A3] text-white print:break-inside-avoid print:page-break-inside-avoid print:break-before-page rounded-xl shadow-md print:rounded-none print:shadow-none select-none">
       {/* Gambar template penutup resmi langsung dari PDF brief sebagai elemen img DOM */}
       <img
         src="/hpn-backcover-clean.png"
         alt="Back Cover HPN 2026"
-        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+        className="absolute inset-0 w-full h-full object-fill pointer-events-none"
       />
 
       {/* Seluruh teks penutup dan kontak PIC berada dalam 1 blok yang sama sehingga 100% simetris terpusat */}

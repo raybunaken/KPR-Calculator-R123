@@ -548,7 +548,7 @@ function CompareContent() {
                       <span>Halaman 1: Cover Depan</span>
                       <span className="text-[11px] text-amber-400 font-normal">A4 Portrait</span>
                     </div>
-                    <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#0B2545]">
+                    <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#2851A3]">
                       <HpnCoverPage
                         customerName={customerName}
                         promoValidUntil={promoValidUntil}
@@ -562,7 +562,7 @@ function CompareContent() {
                       <span>Halaman 3: Back Cover Penutup</span>
                       <span className="text-[11px] text-blue-400 font-normal">A4 Portrait</span>
                     </div>
-                    <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#0B2545]">
+                    <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#2851A3]">
                       <HpnBackCoverPage
                         picName={picName}
                         picPhone={picPhone}
