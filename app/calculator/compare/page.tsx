@@ -55,7 +55,7 @@ function CompareContent() {
   const imageExportRef = useRef<HTMLDivElement>(null);
 
   // HPN 2026 Proposal & Personalization State
-  const [includeHpnCover, setIncludeHpnCover] = useState(false);
+  const [includeHpnCover, setIncludeHpnCover] = useState(true);
   const [customerName, setCustomerName] = useState("");
   const [picName, setPicName] = useState("Sisca");
   const [picPhone, setPicPhone] = useState("0822 1234 1234");
@@ -197,78 +197,15 @@ function CompareContent() {
     <div className="mt-6 print:mt-0 space-y-6 print:space-y-0">
       {/* Telemarketer Visibility & Print Control Toolbar (Web-Only) */}
       <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-3.5 print:hidden space-y-2.5">
-        {/* Main Row: Mode Selector + Samarkan Bank + Primary CTAs */}
+        {/* Main Row: Proposal HPN 2026 Badge + Primary CTAs */}
         <div className="flex flex-wrap items-center justify-between gap-2.5">
-          {/* Left: Mode Segmented Pill */}
-          <div className="flex items-center gap-1 bg-gray-100/90 p-1 rounded-xl border border-gray-200/80">
-            <button
-              type="button"
-              onClick={() => {
-                setIncludeHpnCover(false);
-                setVisibility((v) => ({
-                  ...v,
-                  showParams: true,
-                  showBenefitMatrix: true,
-                  showCards: true,
-                  showBadges: false,
-                  showAmortizationWeb: false,
-                  showUnifiedSchedulePrint: true,
-                  showFullAmortizationPrint: false,
-                }));
-              }}
-              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
-                !includeHpnCover
-                  ? "bg-white text-gray-900 shadow-xs font-bold"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-              title="Laporan Ringkasan Komparasi 1 Halaman"
-            >
-              Ringkasan (1 Hal)
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setIncludeHpnCover(true);
-                setVisibility((v) => ({
-                  ...v,
-                  showParams: true,
-                  showBenefitMatrix: true,
-                  showCards: true,
-                  showBadges: false,
-                  showAmortizationWeb: false,
-                  showUnifiedSchedulePrint: true,
-                  showFullAmortizationPrint: false,
-                }));
-              }}
-              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-                includeHpnCover
-                  ? "bg-indigo-600 text-white shadow-xs font-bold"
-                  : "text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50/60"
-              }`}
-              title="Proposal Resmi HPN 2026: Cover Depan + Ringkasan + Back Cover PIC (3 Halaman)"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
+          {/* Left: Proposal HPN 2026 Mode Badge */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-900 font-bold text-xs shadow-2xs">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
               <span>Proposal HPN 2026 (3 Hal)</span>
-            </button>
+            </div>
           </div>
-
-          {/* Quick Samarkan Bank Toggle */}
-          <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer select-none bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-xl border border-gray-200 transition-colors">
-            <input
-              type="checkbox"
-              checked={visibility.maskBankNames}
-              onChange={(e) =>
-                setVisibility((v) => ({
-                  ...v,
-                  maskBankNames: e.target.checked,
-                }))
-              }
-              className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
-            />
-            <span className="font-semibold text-gray-800">
-              Samarkan Bank (Opsi 1, 2, 3)
-            </span>
-          </label>
 
           {/* Right: Actions */}
           <div className="flex items-center gap-2 ml-auto">
@@ -312,7 +249,7 @@ function CompareContent() {
               title="Cetak atau Simpan PDF"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>{includeHpnCover ? "Cetak PDF (3 Hal)" : "Cetak PDF (1 Hal)"}</span>
+              <span>Cetak PDF (3 Hal)</span>
             </button>
           </div>
         </div>
@@ -445,7 +382,7 @@ function CompareContent() {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2">
               <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
                 <input
                   type="checkbox"
@@ -534,6 +471,21 @@ function CompareContent() {
                   className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
                 />
                 <span className="text-gray-700 font-medium">Detail Lengkap Bank (PDF)</span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={visibility.maskBankNames}
+                  onChange={(e) =>
+                    setVisibility((v) => ({
+                      ...v,
+                      maskBankNames: e.target.checked,
+                    }))
+                  }
+                  className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                />
+                <span className="text-gray-700 font-medium">Samarkan Bank</span>
               </label>
             </div>
           </div>
@@ -784,8 +736,9 @@ function CompareContent() {
                               <span
                                 className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0"
                                 style={{
-                                  backgroundColor:
-                                    BANK_COLORS[res.product.bank] || "#3B82F6",
+                                  backgroundColor: visibility.maskBankNames
+                                    ? "#475569"
+                                    : (BANK_COLORS[res.product.bank] || "#3B82F6"),
                                 }}
                               >
                                 Opsi {i + 1}
@@ -793,12 +746,12 @@ function CompareContent() {
                               <div>
                                 <span className="font-bold text-gray-900 block">
                                   {visibility.maskBankNames
-                                    ? `Opsi ${i + 1}`
+                                    ? `Program Rekomendasi ${i + 1}`
                                     : res.product.bank}
                                 </span>
                                 <span className="text-[11px] text-gray-500 truncate max-w-[200px] block">
                                   {visibility.maskBankNames
-                                    ? `Program KPR Opsi ${i + 1}`
+                                    ? `Fix ${res.product.masaFix} Thn • Rate ${formatPercent(res.product.rates[0])}`
                                     : res.product.nama}
                                 </span>
                               </div>
@@ -1203,8 +1156,9 @@ function CompareContent() {
                   <span>Detail Jadwal Angsuran per Tahun</span>
                 </h3>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Rincian amortisasi pokok, bunga, dan sisa saldo tahunan untuk
-                  setiap bank.
+                  {visibility.maskBankNames
+                    ? "Rincian amortisasi pokok, bunga, dan sisa saldo tahunan untuk setiap opsi program."
+                    : "Rincian amortisasi pokok, bunga, dan sisa saldo tahunan untuk setiap bank."}
                 </p>
               </div>
 
@@ -1223,12 +1177,15 @@ function CompareContent() {
                     <span
                       className="w-2 h-2 rounded-full shrink-0"
                       style={{
-                        backgroundColor:
-                          BANK_COLORS[r.product.bank] || "#3B82F6",
+                        backgroundColor: visibility.maskBankNames
+                          ? "#475569"
+                          : (BANK_COLORS[r.product.bank] || "#3B82F6"),
                       }}
                     />
                     <span>
-                      {r.product.bank} - {r.product.nama.slice(0, 18)}...
+                      {visibility.maskBankNames
+                        ? `Opsi ${i + 1}`
+                        : `${r.product.bank} - ${r.product.nama.slice(0, 18)}...`}
                     </span>
                   </button>
                 ))}
@@ -1239,10 +1196,14 @@ function CompareContent() {
             <div className="bg-blue-50/40 p-4 rounded-xl border border-blue-100/80 flex flex-wrap items-center justify-between gap-3 text-xs">
               <div>
                 <span className="text-gray-500 font-medium">
-                  Program Bank Aktif:{" "}
+                  {visibility.maskBankNames
+                    ? "Program Pilihan Aktif: "
+                    : "Program Bank Aktif: "}
                 </span>
                 <span className="font-bold text-blue-800 text-sm">
-                  {activeResult.product.bank} | {activeResult.product.nama}
+                  {visibility.maskBankNames
+                    ? `Opsi ${activeTab + 1} | Program Rekomendasi ${activeTab + 1} (Fix ${activeResult.product.masaFix} Thn)`
+                    : `${activeResult.product.bank} | ${activeResult.product.nama}`}
                 </span>
               </div>
               <div className="flex items-center gap-4">
@@ -1632,8 +1593,8 @@ function ReportPage1Content({
           const isMonthlyCheaper = monthlySaved > 0;
 
           const optionTitle = visibility.maskBankNames
-            ? `Option ${idx + 1}`
-            : `Option ${idx + 1} (${res.product.bank})`;
+            ? `Opsi ${idx + 1}`
+            : `Opsi ${idx + 1} (${res.product.bank})`;
           const rateDisplay = formatPercent(res.product.rates[0]);
 
           let savingsLabel = "Total Kewajiban Angsuran";
@@ -1711,7 +1672,7 @@ function ReportPage1Content({
                   key={r.product.kode}
                   className="px-2.5 py-1.5 text-right w-[24%] border-r border-blue-900/60 last:border-r-0"
                 >
-                  {visibility.maskBankNames ? `Option ${i + 1}` : r.product.bank}
+                  {visibility.maskBankNames ? `Opsi ${i + 1}` : r.product.bank}
                 </th>
               ))}
             </tr>
@@ -1910,7 +1871,7 @@ function ReportPage1Content({
                     colSpan={2}
                   >
                     <div className="font-bold text-slate-900 text-[8.5px]">
-                      {visibility.maskBankNames ? `Option ${i + 1}` : r.product.bank}
+                      {visibility.maskBankNames ? `Opsi ${i + 1}` : r.product.bank}
                     </div>
                     <span className="text-[7px] text-slate-500 font-normal block truncate max-w-[130px] mx-auto">
                       {visibility.maskBankNames
