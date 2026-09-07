@@ -544,50 +544,95 @@ function CompareContent() {
       {/* 1. WEB VIEW CONTAINER (Hidden during print) */}
       {/* ============================================================ */}
       <div className="space-y-6 print:hidden">
-        {/* Optional On-Screen Preview of Cover & Back Cover */}
+        {/* Modal Dialog Preview Cover HPN 2026 (Web-Only) */}
         {includeHpnCover && showHpnPreviewModal && (
-          <div className="bg-slate-900/95 p-6 rounded-2xl border border-slate-700 space-y-4">
-            <div className="flex items-center justify-between text-white border-b border-slate-700 pb-3">
-              <div>
-                <h3 className="text-sm font-bold text-white">
-                  Preview Tampilan Cover HPN 2026
-                </h3>
-                <p className="text-xs text-slate-400">
-                  Berikut tampilan halaman 1 (Cover Depan) dan halaman 3 (Back Cover) yang akan dicetak pada kertas A4.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowHpnPreviewModal(false)}
-                className="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-600 cursor-pointer"
-              >
-                Tutup Preview
-              </button>
-            </div>
+          <div
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 print:hidden"
+            onClick={() => setShowHpnPreviewModal(false)}
+          >
+            <div
+              className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between text-white shrink-0">
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Preview Proposal HPN 2026</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Simulasi cetak A4: Cover Depan (Hal 1) & Back Cover Penutup (Hal 3)
+                  </p>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-slate-300 block">
-                  Halaman 1: Cover Depan
-                </span>
-                <div className="rounded-xl overflow-hidden shadow-lg border border-slate-700 max-w-[420px] mx-auto">
-                  <HpnCoverPage
-                    customerName={customerName}
-                    promoValidUntil={promoValidUntil}
-                  />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowHpnPreviewModal(false);
+                      setTimeout(() => window.print(), 150);
+                    }}
+                    className="text-xs px-3.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Cetak (3 Hal)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowHpnPreviewModal(false)}
+                    className="text-xs px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 cursor-pointer"
+                  >
+                    Tutup
+                  </button>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-slate-300 block">
-                  Halaman 3: Back Cover Penutup
-                </span>
-                <div className="rounded-xl overflow-hidden shadow-lg border border-slate-700 max-w-[420px] mx-auto">
-                  <HpnBackCoverPage
-                    picName={picName}
-                    picPhone={picPhone}
-                  />
+              {/* Modal Body: Scrollable Preview of Both Pages */}
+              <div className="p-4 sm:p-6 overflow-y-auto bg-slate-950/60 flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                  {/* Page 1: Front Cover */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                      <span>Halaman 1: Cover Depan</span>
+                      <span className="text-[11px] text-amber-400 font-normal">A4 Portrait</span>
+                    </div>
+                    <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#0B2545]">
+                      <HpnCoverPage
+                        customerName={customerName}
+                        promoValidUntil={promoValidUntil}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Page 3: Back Cover */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+                      <span>Halaman 3: Back Cover Penutup</span>
+                      <span className="text-[11px] text-blue-400 font-normal">A4 Portrait</span>
+                    </div>
+                    <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#0B2545]">
+                      <HpnBackCoverPage
+                        picName={picName}
+                        picPhone={picPhone}
+                      />
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="px-5 py-3 border-t border-slate-800 bg-slate-900 text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2 shrink-0">
+                <span>
+                  Halaman 2 adalah <strong>Lembar Komparasi Bank</strong> yang akan dicetak di antara Cover Depan dan Back Cover.
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowHpnPreviewModal(false)}
+                  className="text-xs text-slate-300 hover:text-white underline cursor-pointer"
+                >
+                  Kembali
+                </button>
               </div>
             </div>
           </div>
