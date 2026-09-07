@@ -25,6 +25,8 @@ import {
   Share2,
   Sparkles,
   UserCheck,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
 import type { BankProduct, LoanInput, SimulationResult } from "@/lib/types";
@@ -60,6 +62,7 @@ function CompareContent() {
   const [promoValidUntil, setPromoValidUntil] = useState("31 Oktober 2026");
   const [showPersonalizeCard, setShowPersonalizeCard] = useState(false);
   const [showHpnPreviewModal, setShowHpnPreviewModal] = useState(false);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
   const [visibility, setVisibility] = useState({
     showParams: true,
@@ -192,31 +195,18 @@ function CompareContent() {
 
   return (
     <div className="mt-6 print:mt-0 space-y-6 print:space-y-0">
-      {/* Telemarketer Visibility Control Toolbar (Web-Only) */}
-      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 print:hidden space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-700 border border-blue-100">
-              <SlidersHorizontal className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="font-bold text-gray-900 text-xs sm:text-sm">
-                Pengaturan Bagian Tampilan & Cetak PDF (Telemarketer)
-              </h3>
-              <p className="text-[11px] text-gray-500">
-                Sembunyikan atau tampilkan seksi tertentu agar tampilan tidak
-                terlalu mendetail ke nasabah.
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Presets & Export Actions */}
-          <div className="flex items-center gap-2 flex-wrap">
+      {/* Telemarketer Visibility & Print Control Toolbar (Web-Only) */}
+      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-3.5 print:hidden space-y-2.5">
+        {/* Main Row: Mode Selector + Samarkan Bank + Primary CTAs */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          {/* Left: Mode Segmented Pill */}
+          <div className="flex items-center gap-1 bg-gray-100/90 p-1 rounded-xl border border-gray-200/80">
             <button
               type="button"
               onClick={() => {
                 setIncludeHpnCover(false);
-                setVisibility({
+                setVisibility((v) => ({
+                  ...v,
                   showParams: true,
                   showBenefitMatrix: true,
                   showCards: true,
@@ -224,50 +214,23 @@ function CompareContent() {
                   showAmortizationWeb: false,
                   showUnifiedSchedulePrint: true,
                   showFullAmortizationPrint: false,
-                  maskBankNames: true,
-                });
+                }));
               }}
-              className={`text-xs px-3 py-1.5 rounded-lg border font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs ${
-                !includeHpnCover && !visibility.showFullAmortizationPrint
-                  ? "border-orange-300 bg-orange-100 text-orange-900"
-                  : "border-orange-200 bg-orange-50 text-orange-800 hover:bg-orange-100"
+              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
+                !includeHpnCover
+                  ? "bg-white text-gray-900 shadow-xs font-bold"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
-              title="Laporan PDF Singkat (1 Lembar Ringkasan Komparasi)"
+              title="Laporan Ringkasan Komparasi 1 Halaman"
             >
-              <EyeOff className="w-3.5 h-3.5 text-orange-700" />
-              <span>Preset 1 Lembar</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setIncludeHpnCover(false);
-                setVisibility({
-                  showParams: true,
-                  showBenefitMatrix: true,
-                  showCards: true,
-                  showBadges: true,
-                  showAmortizationWeb: true,
-                  showUnifiedSchedulePrint: true,
-                  showFullAmortizationPrint: true,
-                  maskBankNames: true,
-                });
-              }}
-              className={`text-xs px-3 py-1.5 rounded-lg border font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs ${
-                !includeHpnCover && visibility.showFullAmortizationPrint
-                  ? "border-blue-300 bg-blue-100 text-blue-900"
-                  : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
-              }`}
-              title="Laporan PDF Full (Ringkasan + Lembar Detail Lengkap per Bank)"
-            >
-              <Eye className="w-3.5 h-3.5 text-blue-600" />
-              <span>Preset Lengkap</span>
+              Ringkasan (1 Hal)
             </button>
             <button
               type="button"
               onClick={() => {
                 setIncludeHpnCover(true);
-                setShowPersonalizeCard(true);
-                setVisibility({
+                setVisibility((v) => ({
+                  ...v,
                   showParams: true,
                   showBenefitMatrix: true,
                   showCards: true,
@@ -275,149 +238,22 @@ function CompareContent() {
                   showAmortizationWeb: false,
                   showUnifiedSchedulePrint: true,
                   showFullAmortizationPrint: false,
-                  maskBankNames: true,
-                });
+                }));
               }}
-              className={`text-xs px-3 py-1.5 rounded-lg border font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs ${
+              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                 includeHpnCover
-                  ? "border-indigo-600 bg-indigo-600 text-white shadow-xs"
-                  : "border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                  ? "bg-indigo-600 text-white shadow-xs font-bold"
+                  : "text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50/60"
               }`}
-              title="Proposal Resmi HPN 2026 (Cover Depan + Komparasi + Back Cover PIC)"
+              title="Proposal Resmi HPN 2026: Cover Depan + Ringkasan + Back Cover PIC (3 Halaman)"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>Proposal HPN 2026</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowPersonalizeCard((prev) => !prev)}
-              className={`text-xs px-2.5 py-1.5 rounded-lg border font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
-                showPersonalizeCard
-                  ? "bg-slate-800 text-white border-slate-900"
-                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
-              }`}
-              title="Atur Nama Nasabah & Kontak PIC Mortgage"
-            >
-              <UserCheck className="w-3.5 h-3.5 text-blue-500" />
-              <span>Personalisasi</span>
-            </button>
-
-            <div className="w-px h-5 bg-gray-200 hidden sm:block" />
-
-            {/* Direct Download Foto (PNG) */}
-            <button
-              type="button"
-              onClick={handleDownloadImage}
-              disabled={isExportingImage}
-              className="text-xs px-3.5 py-1.5 rounded-lg bg-[#00A86B] hover:bg-[#00915C] active:bg-[#007A4D] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
-              title="Download Gambar PNG Resolusi Tinggi untuk Kirim ke WhatsApp"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>{isExportingImage ? "Membuat Foto..." : "Download Foto (PNG)"}</span>
-            </button>
-
-            {/* Direct Print PDF */}
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="text-xs px-3.5 py-1.5 rounded-lg bg-[#0B2545] hover:bg-[#081c35] active:bg-[#061528] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-              title="Cetak atau Simpan sebagai PDF A4"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Cetak PDF (A4)</span>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Proposal HPN 2026 (3 Hal)</span>
             </button>
           </div>
-        </div>
 
-        {/* Personalisasi Proposal HPN 2026 Panel */}
-        {(showPersonalizeCard || includeHpnCover) && (
-          <div className="pt-3 border-t border-indigo-100 bg-indigo-50/50 p-4 rounded-xl space-y-3">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse" />
-                <span className="text-xs font-bold text-indigo-950 uppercase tracking-wide">
-                  Personalisasi Dokumen Proposal HPN 2026
-                </span>
-              </div>
-              <label className="flex items-center gap-2 text-xs font-semibold text-indigo-900 cursor-pointer select-none bg-white px-3 py-1 rounded-lg border border-indigo-200 shadow-2xs">
-                <input
-                  type="checkbox"
-                  checked={includeHpnCover}
-                  onChange={(e) => setIncludeHpnCover(e.target.checked)}
-                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer"
-                />
-                <span>Sertakan Cover Depan & Back Cover HPN 2026</span>
-              </label>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                  Nama Nasabah / Customer:
-                </label>
-                <input
-                  type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="Contoh: Bpk. Budi Santoso"
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                  Nama PIC Mortgage:
-                </label>
-                <input
-                  type="text"
-                  value={picName}
-                  onChange={(e) => setPicName(e.target.value)}
-                  placeholder="Contoh: Sisca"
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                  No. WhatsApp PIC:
-                </label>
-                <input
-                  type="text"
-                  value={picPhone}
-                  onChange={(e) => setPicPhone(e.target.value)}
-                  placeholder="Contoh: 0822 1234 1234"
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
-                  Masa Berlaku Promo:
-                </label>
-                <input
-                  type="text"
-                  value={promoValidUntil}
-                  onChange={(e) => setPromoValidUntil(e.target.value)}
-                  placeholder="Contoh: 31 Oktober 2026"
-                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-              </div>
-            </div>
-
-            {includeHpnCover && (
-              <div className="flex items-center gap-2 text-[11px] text-indigo-800 bg-white/90 p-2.5 rounded-lg border border-indigo-200">
-                <Info className="w-4 h-4 shrink-0 text-indigo-600" />
-                <span>
-                  Saat <strong>Cetak PDF (A4)</strong> ditekan, dokumen akan otomatis mencetak <strong>3 Halaman Proposal Resmi</strong>: Cover Depan HPN 2026, Lembar Komparasi 3 Opsi Bank, dan Back Cover Penutup Kontak PIC.
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Checkbox Toggles per Section */}
-        <div className="pt-2.5 border-t border-gray-100 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 text-xs">
-          <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-orange-50/60 border border-orange-200 select-none bg-orange-50/40">
+          {/* Quick Samarkan Bank Toggle */}
+          <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer select-none bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-xl border border-gray-200 transition-colors">
             <input
               type="checkbox"
               checked={visibility.maskBankNames}
@@ -427,156 +263,287 @@ function CompareContent() {
                   maskBankNames: e.target.checked,
                 }))
               }
-              className="w-4 h-4 rounded text-orange-600 focus:ring-orange-500 accent-orange-600 cursor-pointer"
+              className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
             />
-            <span className="font-bold text-orange-950">
-              Sembunyikan Bank (Opsi 1, 2, 3)
+            <span className="font-semibold text-gray-800">
+              Samarkan Bank (Opsi 1, 2, 3)
             </span>
           </label>
 
-          <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100 select-none">
-            <input
-              type="checkbox"
-              checked={visibility.showBenefitMatrix}
-              onChange={(e) =>
-                setVisibility((v) => ({
-                  ...v,
-                  showBenefitMatrix: e.target.checked,
-                }))
-              }
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
-            />
-            <span className="font-medium text-gray-700">Matriks Benefit</span>
-          </label>
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Opsi Tampilan Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowAdvancedOptions((prev) => !prev)}
+              className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
+                showAdvancedOptions
+                  ? "bg-gray-800 text-white border-gray-900"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+              }`}
+              title="Kustomisasi tampilan dan bagian cetak"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Opsi Tampilan</span>
+              {showAdvancedOptions ? (
+                <ChevronUp className="w-3 h-3 text-gray-300" />
+              ) : (
+                <ChevronDown className="w-3 h-3 text-gray-400" />
+              )}
+            </button>
 
-          <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100 select-none">
-            <input
-              type="checkbox"
-              checked={visibility.showCards}
-              onChange={(e) =>
-                setVisibility((v) => ({ ...v, showCards: e.target.checked }))
-              }
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
-            />
-            <span className="font-medium text-gray-700">Kartu Komparasi</span>
-          </label>
+            {/* Download PNG */}
+            <button
+              type="button"
+              onClick={handleDownloadImage}
+              disabled={isExportingImage}
+              className="text-xs px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+              title="Download Gambar PNG Resolusi Tinggi untuk WhatsApp"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>{isExportingImage ? "Memproses..." : "Download Foto"}</span>
+            </button>
 
-          <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100 select-none">
-            <input
-              type="checkbox"
-              checked={visibility.showBadges}
-              onChange={(e) =>
-                setVisibility((v) => ({ ...v, showBadges: e.target.checked }))
-              }
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
-            />
-            <span className="font-medium text-gray-700">Label Rekomendasi</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100 select-none">
-            <input
-              type="checkbox"
-              checked={visibility.showAmortizationWeb}
-              onChange={(e) =>
-                setVisibility((v) => ({
-                  ...v,
-                  showAmortizationWeb: e.target.checked,
-                }))
-              }
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
-            />
-            <span className="font-medium text-gray-700">
-              Jadwal & Grafik (Web)
-            </span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100 select-none">
-            <input
-              type="checkbox"
-              checked={visibility.showUnifiedSchedulePrint}
-              onChange={(e) =>
-                setVisibility((v) => ({
-                  ...v,
-                  showUnifiedSchedulePrint: e.target.checked,
-                }))
-              }
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
-            />
-            <span className="font-medium text-gray-700">
-              Tabel Tahunan (PDF)
-            </span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 border border-gray-100 select-none">
-            <input
-              type="checkbox"
-              checked={visibility.showFullAmortizationPrint}
-              onChange={(e) =>
-                setVisibility((v) => ({
-                  ...v,
-                  showFullAmortizationPrint: e.target.checked,
-                }))
-              }
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
-            />
-            <span className="font-medium text-gray-700">
-              Detail Lengkap Bank (PDF)
-            </span>
-          </label>
+            {/* Cetak PDF */}
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="text-xs px-4 py-1.5 rounded-xl bg-[#0B2545] hover:bg-[#081c35] active:bg-[#061528] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+              title="Cetak atau Simpan PDF"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>{includeHpnCover ? "Cetak PDF (3 Hal)" : "Cetak PDF (1 Hal)"}</span>
+            </button>
+          </div>
         </div>
+
+        {/* Row 2: HPN 2026 Customer & PIC Details (Only shown in HPN mode) */}
+        {includeHpnCover && (
+          <div className="pt-2 border-t border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-xs bg-indigo-50/50 px-3.5 py-2 rounded-xl">
+            <div className="flex items-center gap-2 flex-1 min-w-[260px]">
+              <span className="text-[11px] font-bold text-indigo-950 shrink-0">
+                Nama Nasabah:
+              </span>
+              <input
+                type="text"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                placeholder="Nama Customer (cth: Bpk. Budi Santoso)"
+                className="w-full max-w-xs px-2.5 py-1 text-xs rounded-lg border border-indigo-200 bg-white text-gray-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2.5 text-[11px] text-indigo-900">
+              <span className="text-indigo-600 font-medium">PIC:</span>
+              <span className="font-bold text-indigo-950">{picName}</span>
+              <span className="text-gray-300">•</span>
+              <span className="font-bold text-indigo-950">{picPhone}</span>
+
+              <button
+                type="button"
+                onClick={() => setShowPersonalizeCard((prev) => !prev)}
+                className="ml-1 text-indigo-700 hover:text-indigo-900 underline font-semibold cursor-pointer"
+              >
+                {showPersonalizeCard ? "Selesai Edit PIC" : "Edit PIC"}
+              </button>
+
+              <span className="text-indigo-200">|</span>
+
+              <button
+                type="button"
+                onClick={() => setShowHpnPreviewModal((prev) => !prev)}
+                className="text-indigo-700 hover:text-indigo-900 underline font-semibold cursor-pointer"
+              >
+                {showHpnPreviewModal ? "Tutup Preview" : "Preview Cover"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Expanded PIC Edit Drawer (Only when user clicks 'Edit PIC') */}
+        {includeHpnCover && showPersonalizeCard && (
+          <div className="p-3 bg-white rounded-xl border border-indigo-200 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs shadow-2xs">
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                Nama PIC Mortgage:
+              </label>
+              <input
+                type="text"
+                value={picName}
+                onChange={(e) => setPicName(e.target.value)}
+                placeholder="Contoh: Sisca"
+                className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                No. WhatsApp PIC:
+              </label>
+              <input
+                type="text"
+                value={picPhone}
+                onChange={(e) => setPicPhone(e.target.value)}
+                placeholder="Contoh: 0822 1234 1234"
+                className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-700 mb-1">
+                Masa Berlaku Promo:
+              </label>
+              <input
+                type="text"
+                value={promoValidUntil}
+                onChange={(e) => setPromoValidUntil(e.target.value)}
+                placeholder="Contoh: 31 Oktober 2026"
+                className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Collapsible Advanced Section Options Drawer */}
+        {showAdvancedOptions && (
+          <div className="pt-2.5 border-t border-gray-100 p-3 bg-gray-50/80 rounded-xl space-y-2 text-xs">
+            <div className="flex items-center justify-between text-[11px] text-gray-500 font-medium">
+              <span>Pengaturan visibilitas seksi:</span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVisibility((v) => ({
+                      ...v,
+                      showBenefitMatrix: true,
+                      showCards: true,
+                      showBadges: true,
+                      showAmortizationWeb: true,
+                      showUnifiedSchedulePrint: true,
+                      showFullAmortizationPrint: true,
+                    }));
+                  }}
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  Tampilkan Semua
+                </button>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVisibility((v) => ({
+                      ...v,
+                      showBenefitMatrix: true,
+                      showCards: true,
+                      showBadges: false,
+                      showAmortizationWeb: false,
+                      showUnifiedSchedulePrint: true,
+                      showFullAmortizationPrint: false,
+                    }));
+                  }}
+                  className="text-blue-600 hover:underline cursor-pointer"
+                >
+                  Reset Ringkas
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+              <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={visibility.showBenefitMatrix}
+                  onChange={(e) =>
+                    setVisibility((v) => ({
+                      ...v,
+                      showBenefitMatrix: e.target.checked,
+                    }))
+                  }
+                  className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                />
+                <span className="text-gray-700 font-medium">Matriks Benefit</span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={visibility.showCards}
+                  onChange={(e) =>
+                    setVisibility((v) => ({
+                      ...v,
+                      showCards: e.target.checked,
+                    }))
+                  }
+                  className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                />
+                <span className="text-gray-700 font-medium">Kartu Komparasi</span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={visibility.showBadges}
+                  onChange={(e) =>
+                    setVisibility((v) => ({
+                      ...v,
+                      showBadges: e.target.checked,
+                    }))
+                  }
+                  className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                />
+                <span className="text-gray-700 font-medium">Label Rekomendasi</span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={visibility.showAmortizationWeb}
+                  onChange={(e) =>
+                    setVisibility((v) => ({
+                      ...v,
+                      showAmortizationWeb: e.target.checked,
+                    }))
+                  }
+                  className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                />
+                <span className="text-gray-700 font-medium">Jadwal & Grafik</span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={visibility.showUnifiedSchedulePrint}
+                  onChange={(e) =>
+                    setVisibility((v) => ({
+                      ...v,
+                      showUnifiedSchedulePrint: e.target.checked,
+                    }))
+                  }
+                  className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                />
+                <span className="text-gray-700 font-medium">Tabel Tahunan (PDF)</span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2 rounded-lg bg-white border border-gray-200 cursor-pointer select-none hover:bg-gray-50">
+                <input
+                  type="checkbox"
+                  checked={visibility.showFullAmortizationPrint}
+                  onChange={(e) =>
+                    setVisibility((v) => ({
+                      ...v,
+                      showFullAmortizationPrint: e.target.checked,
+                    }))
+                  }
+                  className="w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+                />
+                <span className="text-gray-700 font-medium">Detail Lengkap Bank (PDF)</span>
+              </label>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ============================================================ */}
       {/* 1. WEB VIEW CONTAINER (Hidden during print) */}
       {/* ============================================================ */}
       <div className="space-y-6 print:hidden">
-        {/* HPN 2026 Proposal Booklet Active Banner */}
-        {includeHpnCover && (
-          <div className="bg-gradient-to-r from-[#0B2545] to-[#1E3A8A] text-white p-4 rounded-2xl shadow-sm border border-blue-900/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-900 uppercase tracking-wider">
-                  HPN 2026 Booklet Mode
-                </span>
-                <span className="text-xs text-blue-200">
-                  3 Halaman Proposal Resmi Siap Cetak
-                </span>
-              </div>
-              <p className="text-sm font-semibold text-white">
-                Dokumen untuk:{" "}
-                <span className="text-[#ffc233]">
-                  {customerName.trim() || "Nama Customer"}
-                </span>{" "}
-                • PIC:{" "}
-                <span className="text-white">
-                  {picName} ({picPhone})
-                </span>
-              </p>
-              <p className="text-[11px] text-blue-200">
-                Susunan cetak: Cover Depan HPN 2026 (Hal 1) • Ringkasan Komparasi Bank (Hal 2) • Back Cover Penutup (Hal 3)
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => setShowHpnPreviewModal((prev) => !prev)}
-                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white border border-white/20 transition-all cursor-pointer"
-              >
-                {showHpnPreviewModal ? "Tutup Preview Cover" : "Lihat Preview Cover"}
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="px-4 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>Cetak Proposal (3 Hal)</span>
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Optional On-Screen Preview of Cover & Back Cover */}
         {includeHpnCover && showHpnPreviewModal && (
           <div className="bg-slate-900/95 p-6 rounded-2xl border border-slate-700 space-y-4">
