@@ -21,6 +21,20 @@ export function filterProducts(
 
   return products
     .filter((p) => p.tipe === input.kprType)
+    .filter((p) => {
+      if (!input.rateRange || input.rateRange === "all") return true;
+      const rate0 =
+        p.rates && p.rates[0] !== undefined
+          ? p.rates[0] < 1
+            ? p.rates[0] * 100
+            : p.rates[0]
+          : 99;
+      if (input.rateRange === "<3") return rate0 < 3.0;
+      if (input.rateRange === "3-4") return rate0 >= 3.0 && rate0 < 4.0;
+      if (input.rateRange === "4-5") return rate0 >= 4.0 && rate0 < 5.0;
+      if (input.rateRange === ">5") return rate0 >= 5.0;
+      return true;
+    })
     .map((p) => {
       const rac = racMap.get(p.bank);
       const { eligible, reasons } = checkEligibility(p, rac, input);

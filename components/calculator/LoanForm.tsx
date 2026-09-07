@@ -16,6 +16,7 @@ import type {
   EmploymentStatus,
   LoanType,
   ReadyDana,
+  RateRangeFilter,
 } from "@/lib/types";
 import { KPR_TYPE_LABELS, EMPLOYMENT_LABELS, AREA_OPTIONS } from "@/lib/types";
 import { formatIDRFull, calculateMonthlyInstallment } from "@/lib/calculator";
@@ -31,6 +32,7 @@ const DEFAULT_FORM = {
   employmentStatus: "Karyawan Tetap" as EmploymentStatus,
   area: "Jabodetabek",
   readyDana: "Ya" as ReadyDana,
+  rateRange: "all" as RateRangeFilter,
   propertyPrice: 1_000_000_000,
   dpPercent: 0.15,
   tenorYears: 20,
@@ -111,6 +113,7 @@ export default function LoanForm({
       tenorYears: form.tenorYears,
       area: form.area,
       readyDana: form.readyDana,
+      rateRange: form.rateRange,
       ...(isTO && {
         currentOutstanding: form.currentOutstanding,
         currentRemainingTenorMonths: form.currentRemainingTenorMonths,
@@ -698,6 +701,48 @@ export default function LoanForm({
           <div className="flex justify-between text-xs text-gray-400 mt-1">
             {[5, 10, 15, 20, 25, 30].map((t) => (
               <span key={t}>{t}th</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Grup Bunga Promo Awal */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <Label>Grup Bunga</Label>
+            <span className="text-[11px] text-gray-400 font-medium">
+              {form.rateRange === "<3"
+                ? "< 3%"
+                : form.rateRange === "3-4"
+                  ? "3% • 4%"
+                  : form.rateRange === "4-5"
+                    ? "4% • 5%"
+                    : form.rateRange === ">5"
+                      ? "> 5%"
+                      : "Semua"}
+            </span>
+          </div>
+          <div className="grid grid-cols-5 gap-1.5">
+            {[
+              { id: "all", label: "Semua" },
+              { id: "<3", label: "< 3%" },
+              { id: "3-4", label: "3% • 4%" },
+              { id: "4-5", label: "4% • 5%" },
+              { id: ">5", label: "> 5%" },
+            ].map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() =>
+                  setForm((f) => ({ ...f, rateRange: r.id as RateRangeFilter }))
+                }
+                className={`py-1.5 px-1 rounded-lg border text-xs font-semibold transition-all text-center cursor-pointer ${
+                  form.rateRange === r.id
+                    ? "bg-[#0B2545] text-white border-[#0B2545] shadow-xs"
+                    : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                }`}
+              >
+                {r.label}
+              </button>
             ))}
           </div>
         </div>

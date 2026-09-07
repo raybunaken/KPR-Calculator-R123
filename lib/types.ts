@@ -7,6 +7,7 @@ export type EmploymentStatus =
   "Karyawan Tetap" | "Karyawan Kontrak" | "Pengusaha" | "TNI/Polri";
 export type LoanType = "Syariah" | "Bebas";
 export type ReadyDana = "Ya" | "Tidak";
+export type RateRangeFilter = "all" | "<3" | "3-4" | "4-5" | ">5";
 
 export interface BankProduct {
   no: number;
@@ -52,6 +53,7 @@ export interface LoanInput {
   tenorYears: number;
   area: string;
   readyDana: ReadyDana;
+  rateRange?: RateRangeFilter;
   // Take Over specific
   currentOutstanding?: number;
   currentMonthlyInstallment?: number;

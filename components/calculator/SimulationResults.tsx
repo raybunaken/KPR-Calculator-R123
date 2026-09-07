@@ -122,6 +122,18 @@ export default function SimulationResults({
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end text-xs text-gray-500">
+            {input.rateRange && input.rateRange !== "all" && (
+              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                Bunga:{" "}
+                {input.rateRange === "<3"
+                  ? "< 3%"
+                  : input.rateRange === "3-4"
+                    ? "3% • 4%"
+                    : input.rateRange === "4-5"
+                      ? "4% • 5%"
+                      : "> 5%"}
+              </span>
+            )}
             <span className="hidden lg:inline text-gray-400 text-[11px]">
               Centang kotak pada kartu untuk membandingkan (maks 3)
             </span>
@@ -166,8 +178,13 @@ export default function SimulationResults({
           />
         ))}
         {filteredAndSorted.length === 0 && (
-          <div className="text-center py-8 text-gray-400">
-            Pencarian tidak menemukan produk.
+          <div className="text-center py-10 bg-white rounded-2xl border border-gray-100 p-6 space-y-1 text-gray-500">
+            <p className="text-sm font-semibold text-gray-800">
+              Tidak ada produk pada grup bunga ini.
+            </p>
+            <p className="text-xs text-gray-400">
+              Silakan pilih grup bunga "Semua" pada form di sebelah kiri untuk melihat seluruh opsi program bank.
+            </p>
           </div>
         )}
       </div>
