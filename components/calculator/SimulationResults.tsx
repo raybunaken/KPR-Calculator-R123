@@ -470,9 +470,6 @@ function ProductCard({
                         {formatIDRFull(result.fixPeriodMonthlyInstallment)}/bln
                       </strong>
                     </p>
-                    <p className="text-[10.5px] text-teal-700 font-bold mt-0.5">
-                      Tenor {newTenorYears} Th (Kas Longgar)
-                    </p>
                   </>
                 );
               }
@@ -606,23 +603,6 @@ function ProductCard({
               </>
             )}
           </div>
-
-          {input.kprType === "Take Over" && (
-            <div className="inline-flex items-center gap-1.5 text-orange-800 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200 text-[11px] font-medium">
-              <AlertCircle className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-              <span>
-                Est. Biaya Take Over (5%):{" "}
-                <strong className="font-bold text-orange-900">
-                  {formatIDR(
-                    input.currentOutstanding
-                      ? input.currentOutstanding * 0.05
-                      : 0,
-                  )}
-                </strong>
-                {input.readyDana === "Ya" && " (Siapkan Cash)"}
-              </span>
-            </div>
-          )}
         </div>
       )}
 
