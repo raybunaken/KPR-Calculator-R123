@@ -22,7 +22,7 @@ import {
 } from "@/lib/calculator";
 import AmortizationTable from "./AmortizationTable";
 
-type SortKey = "cicilan_fix" | "total_all" | "total_bunga" | "masaFix";
+type SortKey = "cicilan_fix" | "total_all" | "savings" | "total_bunga" | "masaFix";
 type ViewMode = "eligible" | "all";
 
 interface SimulationResultsProps {
@@ -38,7 +38,14 @@ export default function SimulationResults({
   const [viewMode, setViewMode] = useState<ViewMode>("all"); // Default ke all karena RAC dimatikan
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBank, setSelectedBank] = useState<string>("all");
+  const [selectedScheme, setSelectedScheme] = useState<string>("all");
   const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
+
+  const availableBanks = useMemo(
+    () => Array.from(new Set(results.map((r) => r.product.bank))).sort(),
+    [results],
+  );
 
   const eligibleResults = useMemo(
     () => results.filter((r) => r.isEligible),
@@ -53,6 +60,15 @@ export default function SimulationResults({
 
   const filteredAndSorted = useMemo(() => {
     let list = displayed;
+
+    if (selectedBank !== "all") {
+      list = list.filter((r) => r.product.bank === selectedBank);
+    }
+
+    if (selectedScheme !== "all") {
+      list = list.filter((r) => r.product.jenisBunga === selectedScheme);
+    }
+
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(
@@ -68,6 +84,8 @@ export default function SimulationResults({
           return a.fixPeriodMonthlyInstallment - b.fixPeriodMonthlyInstallment;
         case "total_all":
           return a.totalInstallmentAll - b.totalInstallmentAll;
+        case "savings":
+          return (b.savings?.totalSaved || 0) - (a.savings?.totalSaved || 0);
         case "total_bunga":
           return a.totalInterest - b.totalInterest;
         case "masaFix":
@@ -76,7 +94,7 @@ export default function SimulationResults({
           return 0;
       }
     });
-  }, [displayed, sortKey, searchQuery]);
+  }, [displayed, sortKey, searchQuery, selectedBank, selectedScheme]);
 
   const handleSelect = (code: string) => {
     setSelectedCodes((prev) => {
@@ -110,20 +128,50 @@ export default function SimulationResults({
     <div className="space-y-4 pb-24">
       {/* Summary bar */}
       <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs px-5 py-3.5">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="w-full sm:w-72">
-            <input
-              type="text"
-              placeholder="Cari bank atau nama program..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] transition-all"
-            />
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-3">
+          {/* Left: Search input + Bank filter + Scheme filter */}
+          <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+            <div className="w-full sm:w-60">
+              <input
+                type="text"
+                placeholder="Cari program..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] transition-all"
+              />
+            </div>
+
+            {/* Filter Bank Dropdown */}
+            <select
+              value={selectedBank}
+              onChange={(e) => setSelectedBank(e.target.value)}
+              className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer"
+            >
+              <option value="all">Semua Bank ({availableBanks.length})</option>
+              {availableBanks.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+            </select>
+
+            {/* Filter Skema Bunga Dropdown */}
+            <select
+              value={selectedScheme}
+              onChange={(e) => setSelectedScheme(e.target.value)}
+              className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer"
+            >
+              <option value="all">Semua Skema</option>
+              <option value="Single Rate">Flat (Single Rate)</option>
+              <option value="Berjenjang">Berjenjang (Step Up)</option>
+              <option value="Fixed">Fix • Floating</option>
+            </select>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end text-xs text-gray-500">
+          {/* Right: Bunga Badge + Urutkan */}
+          <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end text-xs text-gray-500">
             {input.rateRange && input.rateRange !== "all" && (
-              <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+              <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
                 Bunga:{" "}
                 {input.rateRange === "<3"
                   ? "< 3%"
@@ -134,20 +182,21 @@ export default function SimulationResults({
                       : "> 5%"}
               </span>
             )}
-            <span className="hidden lg:inline text-gray-400 text-[11px]">
-              Centang kotak pada kartu untuk membandingkan (maks 3)
-            </span>
-            <div className="flex items-center gap-1.5">
+
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="font-medium text-gray-600">Urutkan:</span>
               <div className="flex items-center gap-1">
                 <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
                 <select
                   value={sortKey}
                   onChange={(e) => setSortKey(e.target.value as SortKey)}
-                  className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-lg px-2.5 py-1.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer"
+                  className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-2.5 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer"
                 >
                   <option value="cicilan_fix">Cicilan Fix Terendah</option>
-                  <option value="total_all">Total Angsuran Terendah</option>
+                  <option value="total_all">Total Bayar Terhemat (Lifetime)</option>
+                  {input.kprType === "Take Over" && (
+                    <option value="savings">Penghematan Terbesar</option>
+                  )}
                   <option value="total_bunga">Total Bunga Terendah</option>
                   <option value="masaFix">Masa Fix Terpanjang</option>
                 </select>
@@ -178,13 +227,26 @@ export default function SimulationResults({
           />
         ))}
         {filteredAndSorted.length === 0 && (
-          <div className="text-center py-10 bg-white rounded-2xl border border-gray-100 p-6 space-y-1 text-gray-500">
+          <div className="text-center py-10 bg-white rounded-2xl border border-gray-100 p-6 space-y-2 text-gray-500">
             <p className="text-sm font-semibold text-gray-800">
-              Tidak ada produk pada grup bunga ini.
+              Tidak ada produk yang sesuai dengan kombinasi filter ini.
             </p>
             <p className="text-xs text-gray-400">
-              Silakan pilih grup bunga "Semua" pada form di sebelah kiri untuk melihat seluruh opsi program bank.
+              Coba reset filter bank, skema bunga, atau pilih "Semua" pada form di sebelah kiri.
             </p>
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedBank("all");
+                  setSelectedScheme("all");
+                  setSearchQuery("");
+                }}
+                className="text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors cursor-pointer border border-blue-200"
+              >
+                Reset Filter Bank & Skema
+              </button>
+            </div>
           </div>
         )}
       </div>
