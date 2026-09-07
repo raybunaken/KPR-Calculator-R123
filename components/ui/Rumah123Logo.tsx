@@ -14,13 +14,13 @@ export default function Rumah123Logo({
   size = "md",
 }: Rumah123LogoProps) {
   const isWhite = variant === "white";
-  const badgeBg = isWhite
-    ? "bg-[#FF5A00] text-white"
-    : "bg-[#FF5A00] text-white shadow-2xs";
 
   // Heights based on size
   const logoHeight =
     size === "sm" ? "h-6 sm:h-7" : size === "lg" ? "h-10 sm:h-11" : "h-8 sm:h-9";
+
+  const textSize =
+    size === "sm" ? "text-[11px]" : size === "lg" ? "text-sm" : "text-xs";
 
   const logoSrc = isWhite
     ? "/rumah123-official-white.png"
@@ -37,26 +37,29 @@ export default function Rumah123Logo({
         />
       </div>
 
-      {/* Mortgage & Tagline Badge */}
-      <div className="flex flex-col border-l border-gray-200/80 pl-2.5">
-        <div className="flex items-center gap-1.5">
+      {/* Clean by Mortgage Branding without orange badge */}
+      {withTagline && (
+        <div
+          className={`flex items-center border-l pl-2.5 ${
+            isWhite ? "border-white/30" : "border-slate-300"
+          }`}
+        >
           <span
-            className={`text-[10px] font-black uppercase px-1.5 py-0.2 rounded tracking-wider ${badgeBg}`}
-          >
-            MORTGAGE
-          </span>
-        </div>
-        {withTagline && (
-          <span
-            className={`text-[9.5px] font-medium tracking-tight ${isWhite ? "text-blue-200" : "text-gray-500"} mt-0.5 whitespace-nowrap`}
+            className={`${textSize} font-medium tracking-tight whitespace-nowrap ${
+              isWhite ? "text-blue-100" : "text-slate-600"
+            }`}
           >
             by{" "}
-            <strong className={isWhite ? "text-white" : "text-[#006EB9]"}>
-              Mortgage Team
+            <strong
+              className={`font-black tracking-normal ${
+                isWhite ? "text-white" : "text-[#00438F]"
+              }`}
+            >
+              Mortgage
             </strong>
           </span>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
