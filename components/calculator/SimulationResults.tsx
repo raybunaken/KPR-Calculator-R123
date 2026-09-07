@@ -11,6 +11,7 @@ import {
   Filter,
   ArrowUpDown,
   Layers,
+  Search,
 } from "lucide-react";
 import type { SimulationResult, LoanInput } from "@/lib/types";
 import { BANK_COLORS } from "@/lib/types";
@@ -127,25 +128,53 @@ export default function SimulationResults({
   return (
     <div className="space-y-4 pb-24">
       {/* Summary bar */}
-      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs px-5 py-3.5">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-3">
-          {/* Left: Search input + Bank filter + Scheme filter */}
-          <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
-            <div className="w-full sm:w-60">
-              <input
-                type="text"
-                placeholder="Cari program..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] transition-all"
-              />
+      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 space-y-3">
+        {/* Row 1: Search Bar (Left) + Urutkan (Right) */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="relative w-full sm:flex-1">
+            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Cari bank atau nama program KPR..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl pl-9.5 pr-3.5 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] transition-all bg-gray-50/50 focus:bg-white"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end text-xs shrink-0">
+            <span className="font-medium text-gray-500">Urutkan:</span>
+            <div className="flex items-center gap-1">
+              <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
+              <select
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value as SortKey)}
+                className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer shadow-2xs"
+              >
+                <option value="cicilan_fix">Cicilan Fix Terendah</option>
+                <option value="total_all">Total Bayar Terhemat (Lifetime)</option>
+                {input.kprType === "Take Over" && (
+                  <option value="savings">Penghematan Terbesar</option>
+                )}
+                <option value="total_bunga">Total Bunga Terendah</option>
+                <option value="masaFix">Masa Fix Terpanjang</option>
+              </select>
             </div>
+          </div>
+        </div>
+
+        {/* Row 2: Filter Bank + Filter Skema + Active Bunga Badge + Reset */}
+        <div className="pt-2.5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-semibold text-gray-500 shrink-0">
+              Filter:
+            </span>
 
             {/* Filter Bank Dropdown */}
             <select
               value={selectedBank}
               onChange={(e) => setSelectedBank(e.target.value)}
-              className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer"
+              className="text-xs font-semibold border border-gray-200 bg-white rounded-lg px-2.5 py-1.5 text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0B2545] cursor-pointer shadow-2xs"
             >
               <option value="all">Semua Bank ({availableBanks.length})</option>
               {availableBanks.map((b) => (
@@ -159,50 +188,49 @@ export default function SimulationResults({
             <select
               value={selectedScheme}
               onChange={(e) => setSelectedScheme(e.target.value)}
-              className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer"
+              className="text-xs font-semibold border border-gray-200 bg-white rounded-lg px-2.5 py-1.5 text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#0B2545] cursor-pointer shadow-2xs"
             >
               <option value="all">Semua Skema</option>
               <option value="Single Rate">Flat (Single Rate)</option>
               <option value="Berjenjang">Berjenjang (Step Up)</option>
               <option value="Fixed">Fix • Floating</option>
             </select>
-          </div>
 
-          {/* Right: Bunga Badge + Urutkan */}
-          <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end text-xs text-gray-500">
+            {/* Active Bunga Range Badge */}
             {input.rateRange && input.rateRange !== "all" && (
-              <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
-                Bunga:{" "}
-                {input.rateRange === "<3"
-                  ? "< 3%"
-                  : input.rateRange === "3-4"
-                    ? "3% • 4%"
-                    : input.rateRange === "4-5"
-                      ? "4% • 5%"
-                      : "> 5%"}
+              <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0 flex items-center gap-1">
+                <span>Bunga:</span>
+                <strong>
+                  {input.rateRange === "<3"
+                    ? "< 3%"
+                    : input.rateRange === "3-4"
+                      ? "3% • 4%"
+                      : input.rateRange === "4-5"
+                        ? "4% • 5%"
+                        : "> 5%"}
+                </strong>
               </span>
             )}
 
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="font-medium text-gray-600">Urutkan:</span>
-              <div className="flex items-center gap-1">
-                <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
-                <select
-                  value={sortKey}
-                  onChange={(e) => setSortKey(e.target.value as SortKey)}
-                  className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-2.5 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer"
-                >
-                  <option value="cicilan_fix">Cicilan Fix Terendah</option>
-                  <option value="total_all">Total Bayar Terhemat (Lifetime)</option>
-                  {input.kprType === "Take Over" && (
-                    <option value="savings">Penghematan Terbesar</option>
-                  )}
-                  <option value="total_bunga">Total Bunga Terendah</option>
-                  <option value="masaFix">Masa Fix Terpanjang</option>
-                </select>
-              </div>
-            </div>
+            {/* Quick Reset Link */}
+            {(selectedBank !== "all" || selectedScheme !== "all" || searchQuery.trim() !== "") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedBank("all");
+                  setSelectedScheme("all");
+                  setSearchQuery("");
+                }}
+                className="text-[11px] text-blue-600 hover:text-blue-800 underline font-semibold cursor-pointer ml-1"
+              >
+                Reset Filter
+              </button>
+            )}
           </div>
+
+          <span className="text-[11px] text-gray-400 hidden sm:inline">
+            Centang kotak pada kartu untuk membandingkan (maks 3)
+          </span>
         </div>
       </div>
 
