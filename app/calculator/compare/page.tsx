@@ -23,6 +23,8 @@ import {
   Download,
   ImageIcon,
   Share2,
+  Sparkles,
+  UserCheck,
 } from "lucide-react";
 import Link from "next/link";
 import type { BankProduct, LoanInput, SimulationResult } from "@/lib/types";
@@ -35,6 +37,7 @@ import {
 } from "@/lib/calculator";
 import AmortizationTable from "@/components/calculator/AmortizationTable";
 import Rumah123Logo from "@/components/ui/Rumah123Logo";
+import { HpnCoverPage, HpnBackCoverPage } from "@/components/calculator/HpnTemplates";
 
 function CompareContent() {
   const searchParams = useSearchParams();
@@ -48,6 +51,15 @@ function CompareContent() {
   const [activeTab, setActiveTab] = useState(0);
   const [isExportingImage, setIsExportingImage] = useState(false);
   const imageExportRef = useRef<HTMLDivElement>(null);
+
+  // HPN 2026 Proposal & Personalization State
+  const [includeHpnCover, setIncludeHpnCover] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [picName, setPicName] = useState("Sisca");
+  const [picPhone, setPicPhone] = useState("0822 1234 1234");
+  const [promoValidUntil, setPromoValidUntil] = useState("31 Oktober 2026");
+  const [showPersonalizeCard, setShowPersonalizeCard] = useState(false);
+  const [showHpnPreviewModal, setShowHpnPreviewModal] = useState(false);
 
   const [visibility, setVisibility] = useState({
     showParams: true,
@@ -102,6 +114,9 @@ function CompareContent() {
           decodeURIComponent(dataParam),
         ) as LoanInput;
         setInput(parsedInput);
+        if (parsedInput.nama) {
+          setCustomerName(parsedInput.nama);
+        }
 
         const res = await fetch("/api/products");
         const data = await res.json();
@@ -199,7 +214,8 @@ function CompareContent() {
           <div className="flex items-center gap-2 flex-wrap">
             <button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                setIncludeHpnCover(false);
                 setVisibility({
                   showParams: true,
                   showBenefitMatrix: true,
@@ -209,9 +225,13 @@ function CompareContent() {
                   showUnifiedSchedulePrint: true,
                   showFullAmortizationPrint: false,
                   maskBankNames: true,
-                })
-              }
-              className="text-xs px-3 py-1.5 rounded-lg border border-orange-200 bg-orange-50 text-orange-800 font-bold hover:bg-orange-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                });
+              }}
+              className={`text-xs px-3 py-1.5 rounded-lg border font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs ${
+                !includeHpnCover && !visibility.showFullAmortizationPrint
+                  ? "border-orange-300 bg-orange-100 text-orange-900"
+                  : "border-orange-200 bg-orange-50 text-orange-800 hover:bg-orange-100"
+              }`}
               title="Laporan PDF Singkat (1 Lembar Ringkasan Komparasi)"
             >
               <EyeOff className="w-3.5 h-3.5 text-orange-700" />
@@ -219,7 +239,8 @@ function CompareContent() {
             </button>
             <button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                setIncludeHpnCover(false);
                 setVisibility({
                   showParams: true,
                   showBenefitMatrix: true,
@@ -229,13 +250,56 @@ function CompareContent() {
                   showUnifiedSchedulePrint: true,
                   showFullAmortizationPrint: true,
                   maskBankNames: true,
-                })
-              }
-              className="text-xs px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-700 font-bold hover:bg-blue-100 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                });
+              }}
+              className={`text-xs px-3 py-1.5 rounded-lg border font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs ${
+                !includeHpnCover && visibility.showFullAmortizationPrint
+                  ? "border-blue-300 bg-blue-100 text-blue-900"
+                  : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+              }`}
               title="Laporan PDF Full (Ringkasan + Lembar Detail Lengkap per Bank)"
             >
               <Eye className="w-3.5 h-3.5 text-blue-600" />
               <span>Preset Lengkap</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIncludeHpnCover(true);
+                setShowPersonalizeCard(true);
+                setVisibility({
+                  showParams: true,
+                  showBenefitMatrix: true,
+                  showCards: true,
+                  showBadges: false,
+                  showAmortizationWeb: false,
+                  showUnifiedSchedulePrint: true,
+                  showFullAmortizationPrint: false,
+                  maskBankNames: true,
+                });
+              }}
+              className={`text-xs px-3 py-1.5 rounded-lg border font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs ${
+                includeHpnCover
+                  ? "border-indigo-600 bg-indigo-600 text-white shadow-xs"
+                  : "border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+              }`}
+              title="Proposal Resmi HPN 2026 (Cover Depan + Komparasi + Back Cover PIC)"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>Proposal HPN 2026</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowPersonalizeCard((prev) => !prev)}
+              className={`text-xs px-2.5 py-1.5 rounded-lg border font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                showPersonalizeCard
+                  ? "bg-slate-800 text-white border-slate-900"
+                  : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+              }`}
+              title="Atur Nama Nasabah & Kontak PIC Mortgage"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-blue-500" />
+              <span>Personalisasi</span>
             </button>
 
             <div className="w-px h-5 bg-gray-200 hidden sm:block" />
@@ -264,6 +328,92 @@ function CompareContent() {
             </button>
           </div>
         </div>
+
+        {/* Personalisasi Proposal HPN 2026 Panel */}
+        {(showPersonalizeCard || includeHpnCover) && (
+          <div className="pt-3 border-t border-indigo-100 bg-indigo-50/50 p-4 rounded-xl space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse" />
+                <span className="text-xs font-bold text-indigo-950 uppercase tracking-wide">
+                  Personalisasi Dokumen Proposal HPN 2026
+                </span>
+              </div>
+              <label className="flex items-center gap-2 text-xs font-semibold text-indigo-900 cursor-pointer select-none bg-white px-3 py-1 rounded-lg border border-indigo-200 shadow-2xs">
+                <input
+                  type="checkbox"
+                  checked={includeHpnCover}
+                  onChange={(e) => setIncludeHpnCover(e.target.checked)}
+                  className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer"
+                />
+                <span>Sertakan Cover Depan & Back Cover HPN 2026</span>
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Nama Nasabah / Customer:
+                </label>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Contoh: Bpk. Budi Santoso"
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Nama PIC Mortgage:
+                </label>
+                <input
+                  type="text"
+                  value={picName}
+                  onChange={(e) => setPicName(e.target.value)}
+                  placeholder="Contoh: Sisca"
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  No. WhatsApp PIC:
+                </label>
+                <input
+                  type="text"
+                  value={picPhone}
+                  onChange={(e) => setPicPhone(e.target.value)}
+                  placeholder="Contoh: 0822 1234 1234"
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Masa Berlaku Promo:
+                </label>
+                <input
+                  type="text"
+                  value={promoValidUntil}
+                  onChange={(e) => setPromoValidUntil(e.target.value)}
+                  placeholder="Contoh: 31 Oktober 2026"
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {includeHpnCover && (
+              <div className="flex items-center gap-2 text-[11px] text-indigo-800 bg-white/90 p-2.5 rounded-lg border border-indigo-200">
+                <Info className="w-4 h-4 shrink-0 text-indigo-600" />
+                <span>
+                  Saat <strong>Cetak PDF (A4)</strong> ditekan, dokumen akan otomatis mencetak <strong>3 Halaman Proposal Resmi</strong>: Cover Depan HPN 2026, Lembar Komparasi 3 Opsi Bank, dan Back Cover Penutup Kontak PIC.
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Checkbox Toggles per Section */}
         <div className="pt-2.5 border-t border-gray-100 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 text-xs">
@@ -380,6 +530,102 @@ function CompareContent() {
       {/* 1. WEB VIEW CONTAINER (Hidden during print) */}
       {/* ============================================================ */}
       <div className="space-y-6 print:hidden">
+        {/* HPN 2026 Proposal Booklet Active Banner */}
+        {includeHpnCover && (
+          <div className="bg-gradient-to-r from-[#0B2545] to-[#1E3A8A] text-white p-4 rounded-2xl shadow-sm border border-blue-900/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-900 uppercase tracking-wider">
+                  HPN 2026 Booklet Mode
+                </span>
+                <span className="text-xs text-blue-200">
+                  3 Halaman Proposal Resmi Siap Cetak
+                </span>
+              </div>
+              <p className="text-sm font-semibold text-white">
+                Dokumen untuk:{" "}
+                <span className="text-[#ffc233]">
+                  {customerName.trim() || "Nama Customer"}
+                </span>{" "}
+                • PIC:{" "}
+                <span className="text-white">
+                  {picName} ({picPhone})
+                </span>
+              </p>
+              <p className="text-[11px] text-blue-200">
+                Susunan cetak: Cover Depan HPN 2026 (Hal 1) • Ringkasan Komparasi Bank (Hal 2) • Back Cover Penutup (Hal 3)
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setShowHpnPreviewModal((prev) => !prev)}
+                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white border border-white/20 transition-all cursor-pointer"
+              >
+                {showHpnPreviewModal ? "Tutup Preview Cover" : "Lihat Preview Cover"}
+              </button>
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="px-4 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Cetak Proposal (3 Hal)</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Optional On-Screen Preview of Cover & Back Cover */}
+        {includeHpnCover && showHpnPreviewModal && (
+          <div className="bg-slate-900/95 p-6 rounded-2xl border border-slate-700 space-y-4">
+            <div className="flex items-center justify-between text-white border-b border-slate-700 pb-3">
+              <div>
+                <h3 className="text-sm font-bold text-white">
+                  Preview Tampilan Cover HPN 2026
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Berikut tampilan halaman 1 (Cover Depan) dan halaman 3 (Back Cover) yang akan dicetak pada kertas A4.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHpnPreviewModal(false)}
+                className="text-xs px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-600 cursor-pointer"
+              >
+                Tutup Preview
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+              <div className="space-y-2">
+                <span className="text-xs font-semibold text-slate-300 block">
+                  Halaman 1: Cover Depan
+                </span>
+                <div className="rounded-xl overflow-hidden shadow-lg border border-slate-700 max-w-[420px] mx-auto">
+                  <HpnCoverPage
+                    customerName={customerName}
+                    promoValidUntil={promoValidUntil}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-semibold text-slate-300 block">
+                  Halaman 3: Back Cover Penutup
+                </span>
+                <div className="rounded-xl overflow-hidden shadow-lg border border-slate-700 max-w-[420px] mx-auto">
+                  <HpnBackCoverPage
+                    picName={picName}
+                    picPhone={picPhone}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Parameter Summary Bar */}
         {visibility.showParams && (
           <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs p-5">
@@ -1022,12 +1268,25 @@ function CompareContent() {
       {/* 2. DEDICATED PRINT-ONLY REPORT (Tele Reference Design - A4) */}
       {/* ============================================================ */}
       <div className="hidden print:block text-slate-900">
-        {/* --- PAGE 1: EXECUTIVE SUMMARY & BENEFIT MATRIX (EXACT TELE DESIGN) --- */}
-        <div className="print:break-inside-avoid print:page-break-inside-avoid">
+        {/* HPN 2026: Page 1 Cover Depan */}
+        {includeHpnCover && (
+          <HpnCoverPage
+            customerName={customerName}
+            promoValidUntil={promoValidUntil}
+          />
+        )}
+
+        {/* --- PAGE 1/2: EXECUTIVE SUMMARY & BENEFIT MATRIX (EXACT TELE DESIGN) --- */}
+        <div
+          className={`print:break-inside-avoid print:page-break-inside-avoid ${
+            includeHpnCover ? "print:break-before-page" : ""
+          }`}
+        >
           <ReportPage1Content
             results={results}
             input={input}
             visibility={visibility}
+            customerName={customerName}
           />
         </div>
 
@@ -1214,6 +1473,14 @@ function CompareContent() {
               </div>
             </div>
           ))}
+
+        {/* HPN 2026: Page 3 Back Cover Penutup & PIC */}
+        {includeHpnCover && (
+          <HpnBackCoverPage
+            picName={picName}
+            picPhone={picPhone}
+          />
+        )}
       </div>
 
       {/* ============================================================ */}
@@ -1243,6 +1510,7 @@ function CompareContent() {
             results={results}
             input={input}
             visibility={visibility}
+            customerName={customerName}
           />
         </div>
       </div>
@@ -1257,10 +1525,12 @@ function ReportPage1Content({
   results,
   input,
   visibility,
+  customerName,
 }: {
   results: SimulationResult[];
   input: LoanInput;
   visibility: any;
+  customerName?: string;
 }) {
   return (
     <div className="h-[280mm] max-h-[280mm] flex flex-col justify-between bg-white text-slate-900 print:break-inside-avoid print:page-break-inside-avoid">
@@ -1287,7 +1557,11 @@ function ReportPage1Content({
               Mortgage Comparison Report
             </h1>
             <p className="text-[8px] text-blue-200/90 font-medium">
-              Disiapkan khusus oleh Tim Mortgage Rumah123 untuk Nasabah •{" "}
+              Disiapkan khusus oleh Tim Mortgage Rumah123 untuk{" "}
+              <strong className="text-white font-semibold">
+                {customerName?.trim() ? customerName : "Nasabah"}
+              </strong>{" "}
+              •{" "}
               {new Date().toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",

@@ -85,6 +85,11 @@ input[type="range"]::-webkit-slider-thumb {
     break-before: page !important;
   }
 
+  .print\:break-after-page {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
   .print\:break-inside-avoid {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
