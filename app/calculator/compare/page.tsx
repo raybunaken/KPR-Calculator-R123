@@ -58,7 +58,7 @@ function CompareContent() {
   const [includeHpnCover, setIncludeHpnCover] = useState(true);
   const [customerName, setCustomerName] = useState("");
   const [picName, setPicName] = useState("Sisca");
-  const [picPhone, setPicPhone] = useState("+62 881-0810-99123");
+  const [picPhone, setPicPhone] = useState("0881 0810 99123");
   const [promoValidUntil, setPromoValidUntil] = useState("31 Oktober 2026");
   const [showPersonalizeCard, setShowPersonalizeCard] = useState(false);
   const [showHpnPreviewModal, setShowHpnPreviewModal] = useState(false);
@@ -262,7 +262,7 @@ function CompareContent() {
               <span className="text-indigo-600 font-medium">PIC:</span>
               <span className="font-bold text-indigo-950">{picName.trim() || "Sisca"}</span>
               <span className="text-gray-300">•</span>
-              <span className="font-bold text-indigo-950">{picPhone.trim() || "+62 881-0810-99123"}</span>
+              <span className="font-bold text-indigo-950">{picPhone.trim() || "0881 0810 99123"}</span>
 
               <button
                 type="button"
@@ -308,7 +308,7 @@ function CompareContent() {
                 type="text"
                 value={picPhone}
                 onChange={(e) => setPicPhone(e.target.value)}
-                placeholder="Contoh: +62 881-0810-99123"
+                placeholder="Contoh: 0881 0810 99123"
                 className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
             </div>
@@ -2046,7 +2046,7 @@ function ReportPage1Content({
             </span>{" "}
             | Kontak PIC:{" "}
             <span className="font-bold text-slate-800">
-              {picName?.trim() || "Sisca"} • {picPhone?.trim() || "+62 881-0810-99123"}
+              {picName?.trim() || "Sisca"} • {picPhone?.trim() || "0881 0810 99123"}
             </span>{" "}
             | Dokumen Simulasi Resmi
           </div>

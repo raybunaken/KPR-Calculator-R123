@@ -43,7 +43,7 @@ export function HpnBackCoverPage({
   picPhone: string;
 }) {
   const displayPic = picName.trim() || "Sisca";
-  const displayPhone = picPhone.trim() || "+62 881-0810-99123";
+  const displayPhone = picPhone.trim() || "0881 0810 99123";
 
   return (
     <div className="relative w-full aspect-[210/297] print:aspect-auto print:w-full print:h-[285mm] print:max-h-[285mm] overflow-hidden bg-[#2851A3] text-white print:break-inside-avoid print:page-break-inside-avoid print:break-before-page rounded-xl shadow-md print:rounded-none print:shadow-none select-none">
