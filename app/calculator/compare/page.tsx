@@ -260,9 +260,9 @@ function CompareContent() {
 
             <div className="flex items-center gap-2.5 text-[11px] text-indigo-900">
               <span className="text-indigo-600 font-medium">PIC:</span>
-              <span className="font-bold text-indigo-950">{picName}</span>
+              <span className="font-bold text-indigo-950">{picName.trim() || "Sisca"}</span>
               <span className="text-gray-300">•</span>
-              <span className="font-bold text-indigo-950">{picPhone}</span>
+              <span className="font-bold text-indigo-950">{picPhone.trim() || "0822 1234 1234"}</span>
 
               <button
                 type="button"
@@ -1259,6 +1259,8 @@ function CompareContent() {
             input={input}
             visibility={visibility}
             customerName={customerName}
+            picName={picName}
+            picPhone={picPhone}
           />
         </div>
 
@@ -1484,6 +1486,8 @@ function CompareContent() {
             input={input}
             visibility={visibility}
             customerName={customerName}
+            picName={picName}
+            picPhone={picPhone}
           />
         </div>
       </div>
@@ -1499,11 +1503,15 @@ function ReportPage1Content({
   input,
   visibility,
   customerName,
+  picName,
+  picPhone,
 }: {
   results: SimulationResult[];
   input: LoanInput;
   visibility: any;
   customerName?: string;
+  picName?: string;
+  picPhone?: string;
 }) {
   return (
     <div className="h-[280mm] max-h-[280mm] flex flex-col justify-between bg-white text-slate-900 print:break-inside-avoid print:page-break-inside-avoid">
@@ -2032,11 +2040,15 @@ function ReportPage1Content({
         {/* Official Rumah123 Footer Strip with Logo */}
         <div className="pt-1 border-t border-slate-200 flex items-center justify-between">
           <Rumah123Logo variant="full" withTagline={true} size="sm" />
-          <div className="text-right text-[7px] text-slate-400">
+          <div className="text-right text-[7px] text-slate-500">
             <span className="font-semibold text-slate-700">
               Rumah123 Mortgage
             </span>{" "}
-            | Dokumen Simulasi Resmi | www.rumah123.com/kpr
+            | Kontak PIC:{" "}
+            <span className="font-bold text-slate-800">
+              {picName?.trim() || "Sisca"} • {picPhone?.trim() || "0822 1234 1234"}
+            </span>{" "}
+            | Dokumen Simulasi Resmi
           </div>
         </div>
       </div>
