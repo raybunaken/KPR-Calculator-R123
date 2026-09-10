@@ -1570,7 +1570,7 @@ function ReportPage1Content({
               <span className="text-sm font-extrabold text-white block mt-0.5">
                 {input.kprType === "Take Over"
                   ? formatIDRFull((input.currentOutstanding || 0) * 0.05)
-                  : `${formatIDRFull(((input.propertyPrice || 0) * (input.dpPercent || 0)) / 100)} (${input.dpPercent || 0}%)`}
+                  : `${formatIDRFull((input.propertyPrice || 0) * (input.dpPercent || 0))} (${Math.round((input.dpPercent || 0) * 100)}%)`}
               </span>
             </div>
             <div className="border-l border-white/20 pl-2.5">
