@@ -55,7 +55,7 @@ function CompareContent() {
   const imageExportRef = useRef<HTMLDivElement>(null);
 
   // HPN 2026 Proposal & Personalization State
-  const [includeHpnCover, setIncludeHpnCover] = useState(true);
+  const [includeHpnCover, setIncludeHpnCover] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [picName, setPicName] = useState("Sisca");
   const [picPhone, setPicPhone] = useState("0881 0810 99123");
@@ -197,18 +197,51 @@ function CompareContent() {
     <div className="mt-6 print:mt-0 space-y-6 print:space-y-0">
       {/* Telemarketer Visibility & Print Control Toolbar (Web-Only) */}
       <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-3.5 print:hidden space-y-2.5">
-        {/* Main Row: Proposal HPN 2026 Badge + Primary CTAs */}
+        {/* Main Row: Document Mode Switcher (1 Lembar vs 3 Lembar) + Primary CTAs */}
         <div className="flex flex-wrap items-center justify-between gap-2.5">
-          {/* Left: Proposal HPN 2026 Mode Badge */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-900 font-bold text-xs shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Proposal HPN 2026 (3 Hal)</span>
-            </div>
+          {/* Left: Mode Switcher */}
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+            <button
+              type="button"
+              onClick={() => setIncludeHpnCover(false)}
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                !includeHpnCover
+                  ? "bg-white text-slate-900 shadow-xs font-bold"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+              title="Cetak ringkasan komparasi 1 halaman resmi tanpa cover"
+            >
+              <span>1 Lembar (Ringkas)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIncludeHpnCover(true)}
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                includeHpnCover
+                  ? "bg-indigo-600 text-white shadow-xs font-bold"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+              title="Cetak proposal lengkap 3 halaman dengan cover HPN"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>3 Lembar (Cover HPN)</span>
+            </button>
           </div>
 
           {/* Right: Actions */}
           <div className="flex items-center gap-2 ml-auto">
+            {/* Download Foto PNG */}
+            <button
+              type="button"
+              onClick={handleDownloadImage}
+              disabled={isExportingImage}
+              className="text-xs px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+              title="Download format foto PNG 1 lembar langsung untuk WhatsApp"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-700" />
+              <span>{isExportingImage ? "Memproses..." : "Download Foto (PNG)"}</span>
+            </button>
+
             {/* Opsi Tampilan Toggle */}
             <button
               type="button"
@@ -221,7 +254,7 @@ function CompareContent() {
               title="Kustomisasi tampilan dan bagian cetak"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Opsi Tampilan</span>
+              <span>Opsi</span>
               {showAdvancedOptions ? (
                 <ChevronUp className="w-3 h-3 text-gray-300" />
               ) : (
@@ -237,56 +270,57 @@ function CompareContent() {
               title="Cetak atau Simpan PDF"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Cetak PDF (3 Hal)</span>
+              <span>{includeHpnCover ? "Cetak PDF (3 Hal)" : "Cetak PDF (1 Hal)"}</span>
             </button>
           </div>
         </div>
 
-        {/* Row 2: HPN 2026 Customer & PIC Details (Only shown in HPN mode) */}
-        {includeHpnCover && (
-          <div className="pt-2 border-t border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-xs bg-indigo-50/50 px-3.5 py-2 rounded-xl">
-            <div className="flex items-center gap-2 flex-1 min-w-[260px]">
-              <span className="text-[11px] font-bold text-indigo-950 shrink-0">
-                Nama Nasabah:
-              </span>
-              <input
-                type="text"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Nama Customer (cth: Bpk. Budi Santoso)"
-                className="w-full max-w-xs px-2.5 py-1 text-xs rounded-lg border border-indigo-200 bg-white text-gray-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
-            </div>
-
-            <div className="flex items-center gap-2.5 text-[11px] text-indigo-900">
-              <span className="text-indigo-600 font-medium">PIC:</span>
-              <span className="font-bold text-indigo-950">{picName.trim() || "Sisca"}</span>
-              <span className="text-gray-300">•</span>
-              <span className="font-bold text-indigo-950">{picPhone.trim() || "0881 0810 99123"}</span>
-
-              <button
-                type="button"
-                onClick={() => setShowPersonalizeCard((prev) => !prev)}
-                className="ml-1 text-indigo-700 hover:text-indigo-900 underline font-semibold cursor-pointer"
-              >
-                {showPersonalizeCard ? "Selesai Edit PIC" : "Edit PIC"}
-              </button>
-
-              <span className="text-indigo-200">|</span>
-
-              <button
-                type="button"
-                onClick={() => setShowHpnPreviewModal((prev) => !prev)}
-                className="text-indigo-700 hover:text-indigo-900 underline font-semibold cursor-pointer"
-              >
-                {showHpnPreviewModal ? "Tutup Preview" : "Preview Cover"}
-              </button>
-            </div>
+        {/* Row 2: Customer & PIC Details (Always visible so advisor can customize for both 1 Hal & 3 Hal) */}
+        <div className="pt-2 border-t border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-xs bg-indigo-50/50 px-3.5 py-2 rounded-xl">
+          <div className="flex items-center gap-2 flex-1 min-w-[260px]">
+            <span className="text-[11px] font-bold text-indigo-950 shrink-0">
+              Nama Nasabah:
+            </span>
+            <input
+              type="text"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              placeholder="Nama Customer (cth: Bpk. Budi Santoso)"
+              className="w-full max-w-xs px-2.5 py-1 text-xs rounded-lg border border-indigo-200 bg-white text-gray-900 font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            />
           </div>
-        )}
 
-        {/* Expanded PIC Edit Drawer (Only when user clicks 'Edit PIC') */}
-        {includeHpnCover && showPersonalizeCard && (
+          <div className="flex items-center gap-2.5 text-[11px] text-indigo-900">
+            <span className="text-indigo-600 font-medium">PIC:</span>
+            <span className="font-bold text-indigo-950">{picName.trim() || "Sisca"}</span>
+            <span className="text-gray-300">•</span>
+            <span className="font-bold text-indigo-950">{picPhone.trim() || "0881 0810 99123"}</span>
+
+            <button
+              type="button"
+              onClick={() => setShowPersonalizeCard((prev) => !prev)}
+              className="ml-1 text-indigo-700 hover:text-indigo-900 underline font-semibold cursor-pointer"
+            >
+              {showPersonalizeCard ? "Selesai Edit PIC" : "Edit PIC"}
+            </button>
+
+            {includeHpnCover && (
+              <>
+                <span className="text-indigo-200">|</span>
+                <button
+                  type="button"
+                  onClick={() => setShowHpnPreviewModal((prev) => !prev)}
+                  className="text-indigo-700 hover:text-indigo-900 underline font-semibold cursor-pointer"
+                >
+                  {showHpnPreviewModal ? "Tutup Preview" : "Preview Cover"}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Expanded PIC Edit Drawer (When user clicks 'Edit PIC') */}
+        {showPersonalizeCard && (
           <div className="p-3 bg-white rounded-xl border border-indigo-200 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs shadow-2xs">
             <div>
               <label className="block text-[11px] font-semibold text-gray-700 mb-1">
