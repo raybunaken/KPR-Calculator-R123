@@ -203,6 +203,7 @@ export async function fetchBungaUpdates(): Promise<Record<string, string>> {
     }
     return updates;
   } catch {
-    return {};
+    const { default: staticData } = await import("../data/bank-products.json");
+    return (staticData as any).bungaUpdates || {};
   }
 }
