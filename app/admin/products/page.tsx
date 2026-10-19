@@ -20,26 +20,12 @@ import {
   RefreshCw,
   X,
   Layers,
+  Calendar,
+  Clock,
+  ArrowUpDown,
 } from "lucide-react";
 import Rumah123Logo from "@/components/ui/Rumah123Logo";
 import type { BankProduct } from "@/lib/types";
-
-const ALL_BANKS = [
-  "BCA",
-  "Mandiri",
-  "BTN",
-  "CIMB",
-  "CIMB Syariah",
-  "Permata",
-  "Danamon",
-  "Panin",
-  "Maybank",
-  "OCBC",
-  "UOB",
-  "BSI",
-  "BNI",
-  "BRI",
-];
 
 const BANK_COLORS: Record<string, string> = {
   BCA: "#005BAA",
@@ -54,6 +40,14 @@ const BANK_COLORS: Record<string, string> = {
   OCBC: "#DA291C",
   UOB: "#002B49",
   BSI: "#00A39D",
+  BNI: "#FF6200",
+  BRI: "#003087",
+  Sinarmas: "#006B35",
+  INA: "#0067B1",
+  Ganesha: "#8B4513",
+  "KB Bank": "#007DC3",
+  KB: "#007DC3",
+  Muamalat: "#00843D",
 };
 
 interface FormState {
@@ -78,6 +72,7 @@ interface FormState {
   // For Single Rate
   singleRate: string;
   syariah: boolean;
+  updatedAt: string;
 }
 
 const DEFAULT_FORM: FormState = {
@@ -102,7 +97,63 @@ const DEFAULT_FORM: FormState = {
   berjenjangFloatingRate: "13.00",
   singleRate: "8.50",
   syariah: false,
+  updatedAt: "",
 };
+
+function parseDateScore(dStr?: string): number {
+  if (!dStr) return 0;
+  const iso = Date.parse(dStr);
+  if (!isNaN(iso)) return iso;
+
+  const monthMap: Record<string, number> = {
+    jan: 0,
+    feb: 1,
+    mar: 2,
+    apr: 3,
+    mei: 4,
+    may: 4,
+    jun: 5,
+    jul: 6,
+    agu: 7,
+    aug: 7,
+    sep: 8,
+    okt: 9,
+    oct: 9,
+    nov: 10,
+    des: 11,
+    dec: 11,
+  };
+  const parts = dStr.toLowerCase().replace(/,/g, "").split(/\s+/);
+  let day = 1;
+  let month = 0;
+  let year = 2026;
+
+  for (const part of parts) {
+    const num = parseInt(part, 10);
+    if (!isNaN(num)) {
+      if (num > 1000) year = num;
+      else day = num;
+    } else if (monthMap[part.slice(0, 3)] !== undefined) {
+      month = monthMap[part.slice(0, 3)];
+    }
+  }
+  return new Date(year, month, day).getTime();
+}
+
+function getUpdateBadgeStyle(dateStr?: string) {
+  const score = parseDateScore(dateStr);
+  // Benchmark reference date: Oct 2026
+  const refTime = new Date(2026, 9, 19).getTime();
+  const diffDays = Math.max(0, (refTime - score) / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 30) {
+    return "bg-emerald-50 text-emerald-800 border-emerald-300 font-bold shadow-2xs";
+  }
+  if (diffDays <= 90) {
+    return "bg-blue-50 text-blue-800 border-blue-200 font-medium";
+  }
+  return "bg-gray-100 text-gray-600 border-gray-200/80 font-normal";
+}
 
 function formatIDR(v: number): string {
   return new Intl.NumberFormat("id-ID", {
@@ -154,11 +205,15 @@ function CurrencyInput({
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<BankProduct[]>([]);
+  const [bungaUpdates, setBungaUpdates] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedBank, setSelectedBank] = useState<string>("All");
   const [selectedTipe, setSelectedTipe] = useState<string>("All");
   const [selectedJenis, setSelectedJenis] = useState<string>("All");
+  const [sortBy, setSortBy] = useState<
+    "default" | "updated_desc" | "updated_asc" | "bank" | "rate_asc"
+  >("default");
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -178,6 +233,9 @@ export default function AdminProductsPage() {
       if (data.products) {
         setProducts(data.products);
       }
+      if (data.bungaUpdates) {
+        setBungaUpdates(data.bungaUpdates);
+      }
     } catch (err) {
       console.error("Failed to load products", err);
     } finally {
@@ -189,9 +247,43 @@ export default function AdminProductsPage() {
     loadProducts();
   }, []);
 
-  // Filtered Products
-  const filteredProducts = useMemo(() => {
+  const availableBanks = useMemo(() => {
+    const list = Array.from(new Set(products.map((p) => p.bank)))
+      .filter(Boolean)
+      .sort();
+    return list.length > 0
+      ? list
+      : [
+          "BCA",
+          "Mandiri",
+          "BTN",
+          "CIMB",
+          "CIMB Syariah",
+          "Permata",
+          "Danamon",
+          "Panin",
+          "Maybank",
+          "OCBC",
+          "UOB",
+          "BSI",
+          "BNI",
+          "BRI",
+          "Sinarmas",
+        ];
+  }, [products]);
+
+  const recentUpdatedCount = useMemo(() => {
+    const refScore = new Date(2026, 9, 19).getTime();
     return products.filter((p) => {
+      const d = p.updatedAt || bungaUpdates[p.bank];
+      const score = parseDateScore(d);
+      return refScore - score <= 35 * 24 * 60 * 60 * 1000;
+    }).length;
+  }, [products, bungaUpdates]);
+
+  // Filtered and Sorted Products
+  const filteredProducts = useMemo(() => {
+    let list = products.filter((p) => {
       const matchSearch =
         search === "" ||
         p.nama.toLowerCase().includes(search.toLowerCase()) ||
@@ -203,7 +295,35 @@ export default function AdminProductsPage() {
         selectedJenis === "All" || p.jenisBunga === selectedJenis;
       return matchSearch && matchBank && matchTipe && matchJenis;
     });
-  }, [products, search, selectedBank, selectedTipe, selectedJenis]);
+
+    if (sortBy === "updated_desc") {
+      list = [...list].sort((a, b) => {
+        const da = parseDateScore(a.updatedAt || bungaUpdates[a.bank]);
+        const db = parseDateScore(b.updatedAt || bungaUpdates[b.bank]);
+        return db - da;
+      });
+    } else if (sortBy === "updated_asc") {
+      list = [...list].sort((a, b) => {
+        const da = parseDateScore(a.updatedAt || bungaUpdates[a.bank]);
+        const db = parseDateScore(b.updatedAt || bungaUpdates[b.bank]);
+        return da - db;
+      });
+    } else if (sortBy === "bank") {
+      list = [...list].sort((a, b) => a.bank.localeCompare(b.bank));
+    } else if (sortBy === "rate_asc") {
+      list = [...list].sort((a, b) => (a.rates[0] || 0) - (b.rates[0] || 0));
+    }
+
+    return list;
+  }, [
+    products,
+    search,
+    selectedBank,
+    selectedTipe,
+    selectedJenis,
+    sortBy,
+    bungaUpdates,
+  ]);
 
   // Handle open modal for new product
   function handleOpenCreate() {
@@ -211,6 +331,7 @@ export default function AdminProductsPage() {
     setForm({
       ...DEFAULT_FORM,
       kode: `KPR-${Date.now().toString().slice(-4)}`,
+      updatedAt: "",
     });
     setIsModalOpen(true);
   }
@@ -271,6 +392,7 @@ export default function AdminProductsPage() {
       berjenjangFloatingRate: floatingRate,
       singleRate,
       syariah: product.syariah || false,
+      updatedAt: product.updatedAt || bungaUpdates[product.bank] || "",
     });
     setIsModalOpen(true);
   }
@@ -283,6 +405,7 @@ export default function AdminProductsPage() {
       ...f,
       kode: `${product.kode}-COPY`,
       nama: `${product.nama} (Duplikat)`,
+      updatedAt: "",
     }));
   }
 
@@ -386,6 +509,7 @@ export default function AdminProductsPage() {
       rates: computedRates,
       syariah: form.syariah,
       jenisBunga: form.jenisBunga,
+      updatedAt: form.updatedAt?.trim() || undefined,
     };
 
     try {
@@ -496,7 +620,15 @@ export default function AdminProductsPage() {
               Bank Rekanan
             </span>
             <strong className="text-xl font-extrabold text-blue-700">
-              {new Set(products.map((p) => p.bank)).size} Bank
+              {availableBanks.length} Bank
+            </strong>
+          </div>
+          <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs">
+            <span className="text-gray-400 text-xs font-medium block mb-0.5">
+              Update Terkini (30 Hari)
+            </span>
+            <strong className="text-xl font-extrabold text-emerald-600">
+              {recentUpdatedCount} Program
             </strong>
           </div>
           <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs">
@@ -505,14 +637,6 @@ export default function AdminProductsPage() {
             </span>
             <strong className="text-xl font-extrabold text-orange-600">
               {products.filter((p) => p.tipe === "Take Over").length}
-            </strong>
-          </div>
-          <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-2xs">
-            <span className="text-gray-400 text-xs font-medium block mb-0.5">
-              Program Secondary
-            </span>
-            <strong className="text-xl font-extrabold text-emerald-600">
-              {products.filter((p) => p.tipe === "KPR Secondary").length}
             </strong>
           </div>
         </div>
@@ -540,7 +664,7 @@ export default function AdminProductsPage() {
               className="border border-gray-200 rounded-xl px-2.5 py-2 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
             >
               <option value="All">Semua Bank</option>
-              {ALL_BANKS.map((b) => (
+              {availableBanks.map((b) => (
                 <option key={b} value={b}>
                   Bank {b}
                 </option>
@@ -571,6 +695,20 @@ export default function AdminProductsPage() {
               <option value="Single Rate">Single Rate (Flat)</option>
             </select>
 
+            {/* Sort Filter */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="border border-gray-200 rounded-xl px-2.5 py-2 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
+              title="Urutkan Data"
+            >
+              <option value="default">Urutan Default</option>
+              <option value="updated_desc">Update Terbaru ↓</option>
+              <option value="updated_asc">Update Terlama ↑</option>
+              <option value="bank">Nama Bank (A-Z)</option>
+              <option value="rate_asc">Bunga Awal Terendah</option>
+            </select>
+
             <button
               onClick={loadProducts}
               className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600"
@@ -597,19 +735,20 @@ export default function AdminProductsPage() {
                   </th>
                   <th className="p-3 text-right font-medium">Plafond</th>
                   <th className="p-3 text-center font-medium">Tenor</th>
+                  <th className="p-3 text-center font-bold">Update Terakhir</th>
                   <th className="p-3 text-center font-bold w-[120px]">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-12 text-gray-400">
+                    <td colSpan={8} className="text-center py-12 text-gray-400">
                       Memuat katalog produk KPR...
                     </td>
                   </tr>
                 ) : filteredProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-12 text-gray-400">
+                    <td colSpan={8} className="text-center py-12 text-gray-400">
                       Tidak ada program KPR yang cocok dengan filter pencarian.
                     </td>
                   </tr>
@@ -620,6 +759,11 @@ export default function AdminProductsPage() {
                     const floatingRate = (
                       p.rates[p.rates.length - 1] * 100
                     ).toFixed(2);
+                    const effectiveDate =
+                      p.updatedAt ||
+                      bungaUpdates[p.bank] ||
+                      "Belum ada catatan";
+                    const badgeStyle = getUpdateBadgeStyle(effectiveDate);
 
                     return (
                       <tr
@@ -676,6 +820,15 @@ export default function AdminProductsPage() {
                         </td>
                         <td className="p-3 text-center text-gray-700 font-medium">
                           {p.minTenor} - {p.maxTenor} Thn
+                        </td>
+                        <td className="p-3 text-center whitespace-nowrap">
+                          <span
+                            className={`inline-flex items-center gap-1.5 text-[10.5px] px-2.5 py-1 rounded-lg border ${badgeStyle}`}
+                            title={`Tanggal update: ${effectiveDate}`}
+                          >
+                            <Calendar className="w-3 h-3 shrink-0" />
+                            <span>{effectiveDate}</span>
+                          </span>
                         </td>
                         <td className="p-3 text-center">
                           <div className="flex items-center justify-center gap-1">
@@ -760,7 +913,7 @@ export default function AdminProductsPage() {
                       className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-800 bg-white"
                       required
                     >
-                      {ALL_BANKS.map((b) => (
+                      {availableBanks.map((b) => (
                         <option key={b} value={b}>
                           Bank {b}
                         </option>
@@ -804,7 +957,7 @@ export default function AdminProductsPage() {
                     />
                   </div>
 
-                  <div className="sm:col-span-3">
+                  <div className="sm:col-span-2">
                     <label className="text-xs font-medium text-gray-600 block mb-1">
                       Nama Lengkap Program
                     </label>
@@ -817,6 +970,24 @@ export default function AdminProductsPage() {
                       className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-800"
                       placeholder="Misal: KPR Mandiri Take Over Fixed 3 Tahun Promo Khusus"
                       required
+                    />
+                  </div>
+
+                  <div className="sm:col-span-1">
+                    <label className="text-xs font-medium text-gray-600 block mb-1 flex items-center justify-between">
+                      <span>Tanggal Update</span>
+                      <span className="text-[10px] text-gray-400 font-normal">
+                        (Kosong = hari ini)
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      value={form.updatedAt}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, updatedAt: e.target.value }))
+                      }
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs sm:text-sm text-gray-800"
+                      placeholder="Contoh: 19 Okt 2026"
                     />
                   </div>
                 </div>

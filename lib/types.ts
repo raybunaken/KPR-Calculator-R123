@@ -24,6 +24,7 @@ export interface BankProduct {
   rates: number[]; // annual interest rates per year (decimal), e.g. [0.0399, 0.0399, 0.0399, 0.11, ...]
   syariah: boolean;
   jenisBunga: "Fixed" | "Berjenjang" | "Single Rate";
+  updatedAt?: string;
 }
 
 export interface BankRAC {

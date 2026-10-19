@@ -24,6 +24,7 @@ export async function GET() {
     return NextResponse.json({
       products: data.products || [],
       rac: data.rac || [],
+      bungaUpdates: data.bungaUpdates || {},
     });
   } catch (error) {
     console.error("Admin products GET error:", error);
@@ -48,6 +49,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const now = new Date();
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "Mei",
+      "Jun",
+      "Jul",
+      "Agu",
+      "Sep",
+      "Okt",
+      "Nov",
+      "Des",
+    ];
+    const defaultDate = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    const effectiveUpdatedAt = product.updatedAt?.trim() || defaultDate;
+
+    const productToSave: BankProduct = {
+      ...product,
+      updatedAt: effectiveUpdatedAt,
+    };
+
     const data = await readProductsData();
     const products: BankProduct[] = data.products || [];
 
@@ -56,7 +80,7 @@ export async function POST(req: NextRequest) {
       // Update existing
       products[existingIndex] = {
         ...products[existingIndex],
-        ...product,
+        ...productToSave,
       };
     } else {
       // Create new
@@ -65,10 +89,15 @@ export async function POST(req: NextRequest) {
           ? Math.max(...products.map((p) => p.no || 0)) + 1
           : 1;
       products.unshift({
-        ...product,
+        ...productToSave,
         no: nextNo,
       });
     }
+
+    if (!data.bungaUpdates) {
+      data.bungaUpdates = {};
+    }
+    data.bungaUpdates[product.bank] = effectiveUpdatedAt;
 
     data.products = products;
     await writeProductsData(data);
@@ -79,7 +108,8 @@ export async function POST(req: NextRequest) {
         existingIndex >= 0
           ? "Produk berhasil diperbarui"
           : "Produk baru berhasil ditambahkan",
-      product,
+      product: productToSave,
+      bungaUpdates: data.bungaUpdates,
     });
   } catch (error) {
     console.error("Admin products POST error:", error);
