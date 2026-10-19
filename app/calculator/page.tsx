@@ -33,10 +33,14 @@ function normalizeTipe(tipe: string): string {
   return tipe;
 }
 
+const bungaUpdates: Record<string, string> =
+  (bankData as any).bungaUpdates || {};
+
 const products: BankProduct[] = (bankData.products as BankProduct[]).map(
   (p) => ({
     ...p,
     tipe: normalizeTipe(p.tipe) as BankProduct["tipe"],
+    updatedAt: p.updatedAt || bungaUpdates[p.bank] || "Terbaru",
   }),
 );
 

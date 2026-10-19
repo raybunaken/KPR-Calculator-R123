@@ -12,6 +12,8 @@ import {
   ArrowUpDown,
   Layers,
   Search,
+  Clock,
+  Calendar,
 } from "lucide-react";
 import type { SimulationResult, LoanInput } from "@/lib/types";
 import { BANK_COLORS } from "@/lib/types";
@@ -23,7 +25,53 @@ import {
 } from "@/lib/calculator";
 import AmortizationTable from "./AmortizationTable";
 
-type SortKey = "cicilan_fix" | "total_all" | "savings" | "total_bunga" | "masaFix";
+function parseDateScore(dStr?: string): number {
+  if (!dStr) return 0;
+  const iso = Date.parse(dStr);
+  if (!isNaN(iso)) return iso;
+
+  const monthMap: Record<string, number> = {
+    jan: 0,
+    feb: 1,
+    mar: 2,
+    apr: 3,
+    mei: 4,
+    may: 4,
+    jun: 5,
+    jul: 6,
+    agu: 7,
+    aug: 7,
+    sep: 8,
+    okt: 9,
+    oct: 9,
+    nov: 10,
+    des: 11,
+    dec: 11,
+  };
+  const parts = dStr.toLowerCase().replace(/,/g, "").split(/\s+/);
+  let day = 1;
+  let month = 0;
+  let year = 2026;
+
+  for (const part of parts) {
+    const num = parseInt(part, 10);
+    if (!isNaN(num)) {
+      if (num > 1000) year = num;
+      else day = num;
+    } else if (monthMap[part.slice(0, 3)] !== undefined) {
+      month = monthMap[part.slice(0, 3)];
+    }
+  }
+  return new Date(year, month, day).getTime();
+}
+
+type SortKey =
+  | "cicilan_fix"
+  | "total_all"
+  | "savings"
+  | "total_bunga"
+  | "masaFix"
+  | "updated_desc";
 type ViewMode = "eligible" | "all";
 
 interface SimulationResultsProps {
@@ -91,6 +139,11 @@ export default function SimulationResults({
           return a.totalInterest - b.totalInterest;
         case "masaFix":
           return b.product.masaFix - a.product.masaFix;
+        case "updated_desc":
+          return (
+            parseDateScore(b.product.updatedAt) -
+            parseDateScore(a.product.updatedAt)
+          );
         default:
           return 0;
       }
@@ -152,6 +205,7 @@ export default function SimulationResults({
                 className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer shadow-2xs"
               >
                 <option value="cicilan_fix">Cicilan Fix Terendah</option>
+                <option value="updated_desc">Update Bunga Terbaru</option>
                 <option value="total_all">Total Bayar Terhemat (Lifetime)</option>
                 {input.kprType === "Take Over" && (
                   <option value="savings">Penghematan Terbesar</option>
@@ -412,6 +466,15 @@ function ProductCard({
                   Syariah
                 </span>
               )}
+              {product.updatedAt && (
+                <span
+                  className="text-[10.5px] bg-slate-100/90 text-slate-700 px-2 py-0.5 rounded-md font-medium inline-flex items-center gap-1 border border-slate-200/80 shadow-2xs"
+                  title={`Pembaruan suku bunga: ${product.updatedAt}`}
+                >
+                  <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                  <span>Update: {product.updatedAt}</span>
+                </span>
+              )}
             </div>
 
             <h4
@@ -420,10 +483,21 @@ function ProductCard({
             >
               {product.nama}
             </h4>
-            <p className="text-xs text-gray-400 mt-0.5 font-medium">
-              {product.jenisBunga === "Single Rate"
-                ? `Flat s.d Lunas · Tenor ${result.tenorYears} th · Kode: ${product.kode}`
-                : `Promo ${product.masaFix} th · Tenor ${result.tenorYears} th · Kode: ${product.kode}`}
+            <p className="text-xs text-gray-400 mt-0.5 font-medium flex items-center gap-1.5 flex-wrap">
+              <span>
+                {product.jenisBunga === "Single Rate"
+                  ? `Flat s.d Lunas · Tenor ${result.tenorYears} th · Kode: ${product.kode}`
+                  : `Promo ${product.masaFix} th · Tenor ${result.tenorYears} th · Kode: ${product.kode}`}
+              </span>
+              {product.updatedAt && (
+                <>
+                  <span>·</span>
+                  <span className="text-emerald-700 font-semibold inline-flex items-center gap-1">
+                    <Clock className="w-3 h-3 shrink-0" />
+                    <span>Update {product.updatedAt}</span>
+                  </span>
+                </>
+              )}
             </p>
           </div>
         </div>
