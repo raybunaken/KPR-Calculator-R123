@@ -137,7 +137,7 @@ export default function SimulationResults({
         if (!rac) return true;
         if (selectedRacFilter === "kontrak")
           return rac.statusKaryawan.includes("Karyawan Kontrak");
-        if (selectedRacFilter === "bridging")
+        if (selectedRacFilter === "readyDana")
           return rac.readyDana.includes("Ya");
         if (selectedRacFilter === "dp5")
           return rac.dpMin <= 0.05;
@@ -300,7 +300,7 @@ export default function SimulationResults({
               <option value="all">Semua Profil RAC</option>
               <option value="kontrak">Bisa Karyawan Kontrak</option>
               {input.kprType === "Take Over" && (
-                <option value="bridging">Ready Dana Bridging TO</option>
+                <option value="readyDana">Ready Dana: Ya</option>
               )}
               <option value="dp5">DP Ringan (5%)</option>
             </select>
@@ -596,14 +596,14 @@ function ProductCard({
                     }`}
                     title={
                       rac.readyDana.includes("Ya")
-                        ? "Bank menyediakan fasilitas pelunasan / bridging take over"
+                        ? "Bank menyediakan fasilitas pelunasan Ready Dana take over"
                         : "Nasabah wajib menyediakan dana pelunasan sendiri"
                     }
                   >
                     <Zap className="w-3 h-3 text-teal-600" />
                     <span>
                       {rac.readyDana.includes("Ya")
-                        ? "Dana Bridging: Siap"
+                        ? "Ready Dana: Ya"
                         : "Dana Sendiri"}
                     </span>
                   </span>
@@ -891,7 +891,7 @@ function ProductCard({
                   </div>
                 </div>
 
-                {/* 2. Take Over & Bridging */}
+                {/* 2. Take Over & Ready Dana */}
                 <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80">
                   <p className="font-bold text-gray-800 flex items-center gap-1.5 text-xs mb-1.5">
                     <Zap className="w-3.5 h-3.5 text-teal-600" />

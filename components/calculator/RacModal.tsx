@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo } from "react";
 import {
@@ -41,7 +41,7 @@ export default function RacModal({
 }: RacModalProps) {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<
-    "all" | "kontrak" | "bridging" | "dp5" | "gajiLow" | "syariah"
+    "all" | "kontrak" | "readyDana" | "dp5" | "gajiLow" | "syariah"
   >("all");
   const [expandedBank, setExpandedBank] = useState<string | null>(initialBank || null);
 
@@ -67,7 +67,7 @@ export default function RacModal({
 
     if (filterType === "kontrak") {
       list = list.filter((r) => r.statusKaryawan.includes("Karyawan Kontrak"));
-    } else if (filterType === "bridging") {
+    } else if (filterType === "readyDana") {
       list = list.filter((r) => r.readyDana.includes("Ya"));
     } else if (filterType === "dp5") {
       list = list.filter((r) => r.dpMin <= 0.05);
@@ -101,7 +101,7 @@ export default function RacModal({
                 Kamus RAC Bank & Kriteria Kebijakan Kredit
               </h3>
               <p className="text-xs text-blue-200 mt-0.5">
-                Kamus resmi kriteria penerimaan nasabah, batas gaji, dana bridging take over, DP minimal, dan agunan
+                Kamus resmi kriteria penerimaan nasabah, batas gaji, Ready Dana take over, DP minimal, dan agunan
               </p>
             </div>
           </div>
@@ -166,14 +166,14 @@ export default function RacModal({
             </button>
             <button
               type="button"
-              onClick={() => setFilterType("bridging")}
+              onClick={() => setFilterType("readyDana")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                filterType === "bridging"
+                filterType === "readyDana"
                   ? "bg-teal-700 text-white shadow-xs"
                   : "bg-white text-teal-700 border border-teal-200 hover:bg-teal-50"
               }`}
             >
-              Dana Bridging TO: Siap
+              Ready Dana: Ya
             </button>
             <button
               type="button"
@@ -287,7 +287,7 @@ export default function RacModal({
                         </span>
                       </span>
 
-                      {/* Bridging Pill */}
+                      {/* Ready Dana Pill */}
                       <span
                         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${
                           rac.readyDana.includes("Ya")
@@ -298,7 +298,7 @@ export default function RacModal({
                         <Zap className="w-3 h-3 text-teal-600" />
                         <span>
                           {rac.readyDana.includes("Ya")
-                            ? "Dana Bridging TO: Siap"
+                            ? "Ready Dana: Ya"
                             : "Wajib Dana Sendiri"}
                         </span>
                       </span>
@@ -346,7 +346,7 @@ export default function RacModal({
                       <span>Ringkasan Take Over</span>
                     </p>
                     <p className="text-[11px] text-gray-600 leading-snug">
-                      Bridging: {rac.readyDana.includes("Ya") ? "Tersedia (Bank Lunasi)" : "Dana Sendiri"} | Min TO: {formatJuta(rac.minPlafondTo)}
+                      Ready Dana: {rac.readyDana.includes("Ya") ? "Tersedia (Bank Lunasi)" : "Dana Sendiri"} | Min TO: {formatJuta(rac.minPlafondTo)}
                     </p>
                   </div>
 
@@ -403,15 +403,15 @@ export default function RacModal({
                         </ul>
                       </div>
 
-                      {/* Kategori 2: Ketentuan Take Over & Dana Bridging */}
+                      {/* Kategori 2: Ketentuan Take Over & Ready Dana */}
                       <div className="bg-white rounded-xl p-3.5 border border-gray-200 shadow-2xs space-y-2">
                         <div className="flex items-center gap-1.5 text-teal-900 font-bold border-b border-gray-100 pb-1.5">
                           <Zap className="w-4 h-4 text-teal-600" />
-                          <span>2. Ketentuan Take Over & Dana Bridging</span>
+                          <span>2. Ketentuan Take Over & Ready Dana</span>
                         </div>
                         <ul className="space-y-1.5 text-[11.5px] text-gray-700">
                           <li>
-                            <strong className="text-gray-900">• Skema Bridging (Talangan Bank):</strong> {guide.detail.takeOver.skemaBridging}
+                            <strong className="text-gray-900">• Status Ready Dana Take Over:</strong> {guide.detail.takeOver.skemaReadyDana}
                           </li>
                           <li>
                             <strong className="text-gray-900">• Batas Minimal Plafon TO:</strong> {guide.detail.takeOver.minPlafondTO}
@@ -515,3 +515,4 @@ export default function RacModal({
     </div>
   );
 }
+

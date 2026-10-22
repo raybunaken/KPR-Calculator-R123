@@ -1,4 +1,4 @@
-import type { BankRAC } from "./types";
+﻿import type { BankRAC } from "./types";
 
 export interface BankDetailedRAC {
   penghasilan: {
@@ -10,7 +10,7 @@ export interface BankDetailedRAC {
     joinIncome: string;
   };
   takeOver: {
-    skemaBridging: string;
+    skemaReadyDana: string;
     minPlafondTO: string;
     minSisaTenor: string;
     opsiTopUp: string;
@@ -73,7 +73,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Bisa menggabungkan penghasilan suami & istri resmi untuk menaikkan plafon (maksimal DSR hingga 50-60%).",
       },
       takeOver: {
-        skemaBridging: "Tersedia opsi pelunasan take over syariah (bank dapat memfasilitasi pelunasan sesuai hasil analisis appraisal).",
+        skemaReadyDana: "Tersedia opsi pelunasan take over syariah (bank dapat memfasilitasi pelunasan sesuai hasil analisis appraisal).",
         minPlafondTO: "Rp 100.000.000 (Sangat fleksibel untuk sisa hutang moderat)",
         minSisaTenor: "Minimal sisa pinjaman berjalan 12 bulan di bank asal dengan track record SLIK/BI Checking lancar (Kolektibilitas 1).",
         opsiTopUp: "Tersedia opsi Take Over + Top Up Dana Tunai Syariah untuk kebutuhan renovasi atau modal usaha.",
@@ -101,16 +101,16 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     },
   },
   Mandiri: {
-    keunggulan: "Ready Dana Bridging Take Over (Bank melunasi hutang di bank lama, sertifikat ditebus oleh Mandiri). Prioritas khusus ASN, TNI/Polri, dan BUMN.",
+    keunggulan: "Ready Dana Take Over (Bank melunasi hutang di bank lama, sertifikat ditebus oleh Mandiri). Prioritas khusus ASN, TNI/Polri, dan BUMN.",
     minIncomeKaryawanText: "Rp 5.000.000 / bln (Rp 3 Jt untuk payroll Mandiri / ASN)",
     minIncomePengusahaText: "Rp 25.000.000 / bln (min 2 th berjalan)",
     karyawanNote: "Menerima Karyawan Tetap, Karyawan Kontrak BUMN/PNS, ASN/TNI/Polri. Join income suami-istri otomatis menambah batas DSR.",
     usahaNote: "Min. Income Pengusaha Rp 25 Jt dengan usaha aktif minimal 2-3 tahun, mutasi rekening 6 bulan + legalitas NIB/SIUP.",
-    takeOverNote: "Plafon TO mulai Rp 100 Jt. Bank menalangi pelunasan (bridging) langsung ke bank asal, nasabah TIDAK perlu cari pinjaman dana tunai untuk menebus sertifikat.",
+    takeOverNote: "Plafon TO mulai Rp 100 Jt. Bank menalangi pelunasan (ready dana) langsung ke bank asal, nasabah TIDAK perlu cari pinjaman dana tunai untuk menebus sertifikat.",
     propertyNote: "Lebar jalan depan wajib minimal 3 meter (bisa papasan 2 mobil). Sertifikat SHM atau SHGB (sisa berlaku > 5 th). Tidak dekat makam (<50m), SUTET, atau rel KA.",
     areaCoverNote: "Jabodetabek, Jawa Barat, Jawa Tengah, Jawa Timur, Bandung, Bali, Padang, Cikarang.",
     personaNasabah: "Nasabah take over yang tidak punya uang tunai untuk melunasi sisa pinjaman lama, serta pegawai BUMN/PNS yang cari proses cepat.",
-    sellingPoints: "Bank talangi pelunasan hutang lama (Ready Dana Bridging), proses aman, plafon fleksibel mulai Rp 100 Jt.",
+    sellingPoints: "Bank talangi pelunasan hutang lama (Ready Dana Take Over), proses aman, plafon fleksibel mulai Rp 100 Jt.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 5.000.000 / bulan (khusus payroll Mandiri & ASN minimal Rp 3.000.000).",
@@ -121,8 +121,8 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri resmi (keduanya wajib berpenghasilan dan lolos SLIK).",
       },
       takeOver: {
-        skemaBridging: "READY DANA BRIDGING: Mandiri langsung melunasi sisa pokok hutang ke bank lama nasabah (Nasabah tidak keluar uang tebusan).",
-        minPlafondTO: "Rp 100.000.000 (Salah satu bank dengan batas plafon bridging paling terjangkau).",
+        skemaReadyDana: "Ready Dana Take Over: Mandiri langsung melunasi sisa pokok hutang ke bank lama nasabah (Nasabah tidak keluar uang tebusan).",
+        minPlafondTO: "Rp 100.000.000 (Salah satu bank dengan batas plafon ready dana paling terjangkau).",
         minSisaTenor: "Minimal sisa pinjaman berjalan 12 bulan di bank asal dengan track record cicilan lancar tanpa tunggakan.",
         opsiTopUp: "Sangat direkomendasikan untuk Take Over + Top Up Dana Tunai hingga 80-85% dari nilai taksasi agunan.",
         ketentuanBankAsal: "Menerima take over dari seluruh Bank Umum Konvensional, Bank Syariah, dan BPD terdaftar OJK.",
@@ -143,7 +143,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
       telemarketing: {
         keunggulanUtama: "Solusi nomor 1 untuk nasabah yang mau pindah bank tapi tidak punya uang cash untuk tebus sertifikat di bank lama.",
         personaIdeal: "Nasabah take over yang pusing kena bunga floating 13-14% di bank lama dan ingin sertifikat ditebus langsung oleh Bank Mandiri.",
-        pitchingScript: "'Pak/Bu, di Bank Mandiri ada fasilitas Dana Bridging. Jadi Bapak/Ibu tidak perlu pusing cari uang ratusan juta buat tebus sertifikat di bank lama, Bank Mandiri yang langsung talangi pelunasan hutangnya.'",
+        pitchingScript: "'Pak/Bu, di Bank Mandiri ada fasilitas ready dana. Jadi Bapak/Ibu tidak perlu pusing cari uang ratusan juta buat tebus sertifikat di bank lama, Bank Mandiri yang langsung talangi pelunasan hutangnya.'",
         pantangan: "Jangan diajukan jika lebar jalan depan rumah kurang dari 3 meter atau rumah berada di dalam gang sempit.",
       },
     },
@@ -169,7 +169,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Mendukung join income suami-istri untuk mendongkrak plafon pinjaman.",
       },
       takeOver: {
-        skemaBridging: "Tersedia skema take over konvensional & syariah (bisa difasilitasi bridging untuk nasabah terpilih).",
+        skemaReadyDana: "Tersedia skema take over konvensional & syariah (bisa difasilitasi ready dana untuk nasabah terpilih).",
         minPlafondTO: "Rp 200.000.000.",
         minSisaTenor: "Minimal sisa pinjaman 12 bulan di bank asal dengan riwayat angsuran tertib.",
         opsiTopUp: "Tersedia opsi Top Up dana tunai untuk berbagai kebutuhan nasabah.",
@@ -217,7 +217,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "Menerima pembiayaan take over hijrah dari bank konvensional ke akad syariah.",
+        skemaReadyDana: "Menerima pembiayaan take over hijrah dari bank konvensional ke akad syariah.",
         minPlafondTO: "Rp 200.000.000.",
         minSisaTenor: "Minimal sisa pinjaman 1 tahun di bank lama.",
         opsiTopUp: "Tersedia pembiayaan tambahan kebutuhan multiguna syariah.",
@@ -265,7 +265,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Mendukung join income suami-istri atau orang tua-anak untuk memperbesar kapasitas kredit.",
       },
       takeOver: {
-        skemaBridging: "Menerima take over murni dan take over top up (kebijakan pelunasan dapat dikonsultasikan dengan PIC cabang).",
+        skemaReadyDana: "Menerima take over murni dan take over top up (kebijakan pelunasan dapat dikonsultasikan dengan PIC cabang).",
         minPlafondTO: "Tidak ada batasan minimal yang kaku (bisa memproses plafon kecil di bawah Rp 200 Jt).",
         minSisaTenor: "Minimal sisa pinjaman berjalan 6-12 bulan di bank lama.",
         opsiTopUp: "Tersedia fasilitas penambahan plafon (Top Up) untuk renovasi hunian.",
@@ -313,7 +313,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Bisa join income suami-istri (salah satu wajib karyawan tetap).",
       },
       takeOver: {
-        skemaBridging: "Menerima take over syariah (Mitra Faedah BSI Griya) dengan proses appraisal mandiri.",
+        skemaReadyDana: "Menerima take over syariah (Mitra Faedah BSI Griya) dengan proses appraisal mandiri.",
         minPlafondTO: "Rp 200.000.000.",
         minSisaTenor: "Minimal sisa pinjaman berjalan 12 bulan.",
         opsiTopUp: "Tersedia pembiayaan top up kebutuhan halal.",
@@ -341,7 +341,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     },
   },
   Permata: {
-    keunggulan: "Ready Dana Bridging Take Over (Bank talangi pelunasan sertifikat), proses approval terdigitalisasi serba cepat (Permata e-KPR), ada konven & syariah.",
+    keunggulan: "Ready Dana Take Over (Bank talangi pelunasan sertifikat), proses approval terdigitalisasi serba cepat (Permata e-KPR), ada konven & syariah.",
     minIncomeKaryawanText: "Rp 5.000.000 / bln",
     minIncomePengusahaText: "Rp 15.000.000 / bln (Lebih ringan dari rata-rata)",
     karyawanNote: "Karyawan Tetap (min 1 th) & Karyawan Kontrak (min 2 th). Join income pasangan suami-istri sangat direkomendasikan.",
@@ -350,7 +350,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     propertyNote: "Akses jalan depan minimal 1 mobil leluasa (row 3 meter). Sertifikat SHM atau SHGB aktif.",
     areaCoverNote: "Jabodetabek, Bandung, Jawa Timur, dan kota-kota satellite.",
     personaNasabah: "Wiraswasta/pengusaha dengan omset moderat (Rp 15-20 Jt) atau nasabah take over yang butuh dana talangan pelunasan tanpa ribet.",
-    sellingPoints: "Ready Dana Bridging Take Over, syarat pengusaha cuma Rp 15 Jt, approval digital modern.",
+    sellingPoints: "Ready Dana Take Over, syarat pengusaha cuma Rp 15 Jt, approval digital modern.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 5.000.000 / bulan.",
@@ -361,7 +361,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Bisa join income suami-istri resmi.",
       },
       takeOver: {
-        skemaBridging: "READY DANA BRIDGING: Permata siap menalangi pelunasan hutang lama di bank asal sehingga sertifikat ditebus bank.",
+        skemaReadyDana: "Ready Dana Take Over: Permata siap menalangi pelunasan hutang lama di bank asal sehingga sertifikat ditebus bank.",
         minPlafondTO: "Rp 250.000.000.",
         minSisaTenor: "Minimal sisa pinjaman berjalan 12 bulan.",
         opsiTopUp: "Top up dana tunai sangat mudah disetujui bersamaan dengan proses take over.",
@@ -381,15 +381,15 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         maksimalTenor: "Hingga 20-25 tahun.",
       },
       telemarketing: {
-        keunggulanUtama: "Ready dana bridging take over ditambah syarat penghasilan pengusaha yang hanya Rp 15 Juta.",
+        keunggulanUtama: "Ready Dana Take Over take over ditambah syarat penghasilan pengusaha yang hanya Rp 15 Juta.",
         personaIdeal: "Pengusaha UMKM berpenghasilan Rp 15-20 Jt atau nasabah take over yang butuh proses digital modern tanpa pusing tebus sertifikat.",
-        pitchingScript: "'Pak/Bu, di Permata prosesnya sudah serba digital dan ada fasilitas Dana Bridging, jadi pelunasan bank lama langsung ditalangi Permata tanpa ribet.'",
-        pantangan: "Plafon di bawah Rp 250 Juta untuk take over bridging.",
+        pitchingScript: "'Pak/Bu, di Permata prosesnya sudah serba digital dan ada fasilitas ready dana, jadi pelunasan bank lama langsung ditalangi Permata tanpa ribet.'",
+        pantangan: "Plafon di bawah Rp 250 Juta untuk take over ready dana.",
       },
     },
   },
   Danamon: {
-    keunggulan: "Ready Dana Bridging Take Over, opsi masa bunga fixed super panjang (hingga 10 tahun), proses appraisal agunan sangat objektif dan bersahabat.",
+    keunggulan: "Ready Dana Take Over, opsi masa bunga fixed super panjang (hingga 10 tahun), proses appraisal agunan sangat objektif dan bersahabat.",
     minIncomeKaryawanText: "Rp 8.000.000 / bln",
     minIncomePengusahaText: "Rp 25.000.000 / bln",
     karyawanNote: "Karyawan Tetap (min 1 th) & Kontrak (min 2 th). Bisa join income suami-istri.",
@@ -398,7 +398,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     propertyNote: "Perumahan cluster maupun non-cluster layak huni, akses jalan muat mobil, SHM / SHGB aktif.",
     areaCoverNote: "Jabodetabek, Jawa Barat, Jawa Tengah, Jawa Timur.",
     personaNasabah: "Nasabah plafon menengah ke atas (>= Rp 500 Jt) yang mencari masa bunga fixed panjang (10 th) agar terbebas dari kecemasan bunga naik.",
-    sellingPoints: "Ready Dana Bridging, opsi masa bunga fixed hingga 10 tahun, appraisal fair dan plafon maksimal.",
+    sellingPoints: "Ready Dana Take Over, opsi masa bunga fixed hingga 10 tahun, appraisal fair dan plafon maksimal.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 8.000.000 / bulan.",
@@ -409,7 +409,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "READY DANA BRIDGING: Danamon menalangi pelunasan sertifikat ke bank asal melalui perjanjian notariil split disbursement.",
+        skemaReadyDana: "Ready Dana Take Over: Danamon menalangi pelunasan sertifikat ke bank asal melalui perjanjian notariil split disbursement.",
         minPlafondTO: "Rp 500.000.000 (Dikhususkan untuk segmen menengah ke atas).",
         minSisaTenor: "Minimal sisa pinjaman berjalan 12 bulan.",
         opsiTopUp: "Top up dana tunai sangat diakomodasi.",
@@ -437,7 +437,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     },
   },
   Maybank: {
-    keunggulan: "Menawarkan skema KPR Single Rate (Satu bunga tetap flat sampai lunas tanpa pernah masuk floating). Ready Dana Bridging Take Over.",
+    keunggulan: "Menawarkan skema KPR Single Rate (Satu bunga tetap flat sampai lunas tanpa pernah masuk floating). Ready Dana Take Over.",
     minIncomeKaryawanText: "Rp 8.000.000 / bln",
     minIncomePengusahaText: "Rp 25.000.000 / bln",
     karyawanNote: "Karyawan Tetap & Kontrak di perusahaan bonafide / multinasional. Join income diutamakan.",
@@ -446,7 +446,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     propertyNote: "Kawasan perumahan tertata, jalan depan muat 2 mobil, lingkungan bebas banjir, sertifikat SHM / SHGB.",
     areaCoverNote: "Jabodetabek, Jawa Barat, Jawa Tengah, Jawa Timur, Medan.",
     personaNasabah: "Nasabah mapan (plafon >= Rp 750 Jt) yang anti-ribet dengan bunga floating dan ingin cicilan pasti sama persis dari hari pertama sampai lunas.",
-    sellingPoints: "Skema Single Rate flat s.d lunas, Ready Dana Bridging Take Over, layanan prioritas kelas atas.",
+    sellingPoints: "Skema Single Rate flat s.d lunas, Ready Dana Take Over, layanan prioritas kelas atas.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 8.000.000 / bulan.",
@@ -457,7 +457,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Mendukung join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "READY DANA BRIDGING: Maybank siap menalangi pelunasan hutang lama.",
+        skemaReadyDana: "Ready Dana Take Over: Maybank siap menalangi pelunasan hutang lama.",
         minPlafondTO: "Rp 750.000.000 (Segmen Affluent / Properti Premium).",
         minSisaTenor: "Minimal sisa pinjaman 12 bulan.",
         opsiTopUp: "Tersedia penambahan plafon top up.",
@@ -505,7 +505,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Mendukung join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "Menerima take over konvensional dengan proses terstruktur.",
+        skemaReadyDana: "Menerima take over konvensional dengan proses terstruktur.",
         minPlafondTO: "Rp 200.000.000.",
         minSisaTenor: "Minimal 12 bulan sisa hutang berjalan.",
         opsiTopUp: "Tersedia opsi penambahan dana tunai top up.",
@@ -533,7 +533,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     },
   },
   OCBC: {
-    keunggulan: "Fitur unik KPR Kendali (Saldo tabungan nasabah otomatis memotong pokok hutang KPR setiap hari, memangkas total beban bunga dan mempercepat lunas). Ready Dana Bridging.",
+    keunggulan: "Fitur unik KPR Kendali (Saldo tabungan nasabah otomatis memotong pokok hutang KPR setiap hari, memangkas total beban bunga dan mempercepat lunas). Ready Dana Take Over.",
     minIncomeKaryawanText: "Rp 15.000.000 / bln (Khusus nasabah mapan / prioritas)",
     minIncomePengusahaText: "Rp 25.000.000 / bln",
     karyawanNote: "Hanya Karyawan Tetap & Pengusaha (tidak menerima karyawan kontrak reguler). Dikhususkan untuk nasabah established.",
@@ -542,7 +542,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     propertyNote: "Agunan SHM / SHGB di perumahan berkualitas, jalan muat 2 mobil. Khusus wilayah Jabodetabek.",
     areaCoverNote: "Jabodetabek.",
     personaNasabah: "Pengusaha atau profesional dengan tabungan/dana mengendap besar agar bisa memanfaatkan fitur KPR Kendali untuk memangkas bunga hingga mendekati 0%.",
-    sellingPoints: "KPR Kendali potong bunga pakai saldo tabungan, Ready Dana Bridging, fasilitas perbankan premium.",
+    sellingPoints: "KPR Kendali potong bunga pakai saldo tabungan, Ready Dana Take Over, fasilitas perbankan premium.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 15.000.000 / bulan (Segmen nasabah mapan).",
@@ -553,7 +553,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "READY DANA BRIDGING: OCBC siap menalangi pelunasan hutang take over.",
+        skemaReadyDana: "Ready Dana Take Over: OCBC siap menalangi pelunasan hutang take over.",
         minPlafondTO: "Rp 250.000.000.",
         minSisaTenor: "Minimal 12 bulan sisa pinjaman.",
         opsiTopUp: "Top up dana tunai sangat diakomodasi.",
@@ -601,7 +601,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "Menerima take over konvensional (bisa difasilitasi pelunasan sesuai appraisal).",
+        skemaReadyDana: "Menerima take over konvensional (bisa difasilitasi pelunasan sesuai appraisal).",
         minPlafondTO: "Rp 500.000.000.",
         minSisaTenor: "Minimal sisa pinjaman 12 bulan.",
         opsiTopUp: "JUARA TOP UP: Sangat fleksibel mencairkan top up dana tunai dalam jumlah besar untuk modal kerja.",
@@ -649,7 +649,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "Menerima take over konvensional.",
+        skemaReadyDana: "Menerima take over konvensional.",
         minPlafondTO: "Rp 350.000.000.",
         minSisaTenor: "Minimal 12 bulan sisa pinjaman.",
         opsiTopUp: "Tersedia opsi top up dana tunai.",
@@ -677,7 +677,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     },
   },
   INA: {
-    keunggulan: "Ready Dana Bridging Take Over dengan alur birokrasi perbankan yang ringkas dan waktu persetujuan yang relatif cepat.",
+    keunggulan: "Ready Dana Take Over dengan alur birokrasi perbankan yang ringkas dan waktu persetujuan yang relatif cepat.",
     minIncomeKaryawanText: "Rp 8.000.000 / bln",
     minIncomePengusahaText: "Rp 25.000.000 / bln",
     karyawanNote: "Menerima Karyawan Tetap, Karyawan Kontrak, & Pengusaha.",
@@ -685,8 +685,8 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     takeOverNote: "Plafon TO mulai Rp 350 Jt. Bank siap menalangi pelunasan take over. DP minimal 20%.",
     propertyNote: "Agunan SHM / SHGB, jalan muat mobil, agunan tidak sengketa.",
     areaCoverNote: "Jabodetabek dan Bandung.",
-    personaNasabah: "Nasabah take over di area Jabodetabek/Bandung yang membutuhkan proses persetujuan cepat dengan dana bridging bank.",
-    sellingPoints: "Ready Dana Bridging Take Over, birokrasi cepat dan tidak rumit, solusi praktis take over.",
+    personaNasabah: "Nasabah take over di area Jabodetabek/Bandung yang membutuhkan proses persetujuan cepat dengan ready dana bank.",
+    sellingPoints: "Ready Dana Take Over, birokrasi cepat dan tidak rumit, solusi praktis take over.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 8.000.000 / bulan.",
@@ -697,7 +697,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Mendukung join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "READY DANA BRIDGING: Bank INA siap memfasilitasi dana talangan pelunasan take over.",
+        skemaReadyDana: "Ready Dana Take Over: Bank INA siap memfasilitasi dana talangan pelunasan take over.",
         minPlafondTO: "Rp 350.000.000.",
         minSisaTenor: "Minimal 12 bulan sisa hutang.",
         opsiTopUp: "Tersedia opsi top up.",
@@ -717,7 +717,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         maksimalTenor: "Hingga 15-20 tahun.",
       },
       telemarketing: {
-        keunggulanUtama: "Proses cepat tanpa birokrasi berbelit-belit dan siap talangan pelunasan bridging take over.",
+        keunggulanUtama: "Proses cepat tanpa birokrasi berbelit-belit dan siap fasilitas pelunasan Ready Dana Take Over.",
         personaIdeal: "Nasabah take over di Jabodetabek/Bandung yang butuh persetujuan cepat.",
         pitchingScript: "'Pak/Bu, di Bank INA prosesnya cepat, tidak berbelit, dan bank langsung bantu talangi tebusan sertifikat di bank lama.'",
         pantangan: "Nasabah yang mencari DP di bawah 20%.",
@@ -725,7 +725,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     },
   },
   Ganesha: {
-    keunggulan: "Ready Dana Bridging Take Over dengan pendekatan verifikasi kredit yang sangat personal, komunikatif, dan solutif.",
+    keunggulan: "Ready Dana Take Over dengan pendekatan verifikasi kredit yang sangat personal, komunikatif, dan solutif.",
     minIncomeKaryawanText: "Rp 10.000.000 / bln",
     minIncomePengusahaText: "Rp 25.000.000 / bln",
     karyawanNote: "Hanya Karyawan Tetap & Pengusaha.",
@@ -733,8 +733,8 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     takeOverNote: "Plafon TO mulai Rp 100 Jt (sangat bersahabat untuk take over plafon kecil). Bank siap talangi pelunasan.",
     propertyNote: "Sertifikat SHM / SHGB aktif, jalan muat mobil.",
     areaCoverNote: "Jabodetabek dan Jawa Timur.",
-    personaNasabah: "Nasabah take over plafon Rp 100-300 Jt yang butuh dana talangan bridging dan komunikasi fleksibel dengan pihak bank.",
-    sellingPoints: "Ready Dana Bridging mulai Rp 100 Jt, penanganan kredit personal dan fleksibel.",
+    personaNasabah: "Nasabah take over plafon Rp 100-300 Jt yang butuh fasilitas Ready Dana dan komunikasi fleksibel dengan pihak bank.",
+    sellingPoints: "Ready Dana Take Over mulai Rp 100 Jt, penanganan kredit personal dan fleksibel.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 10.000.000 / bulan.",
@@ -745,7 +745,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Mendukung join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "READY DANA BRIDGING: Bank Ganesha memfasilitasi pelunasan langsung ke bank lama.",
+        skemaReadyDana: "Ready Dana Take Over: Bank Ganesha memfasilitasi pelunasan langsung ke bank lama.",
         minPlafondTO: "Rp 100.000.000 (Sangat ramah untuk take over plafon menengah-kecil).",
         minSisaTenor: "Minimal 12 bulan sisa pinjaman.",
         opsiTopUp: "Tersedia opsi top up dana tunai.",
@@ -765,9 +765,9 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         maksimalTenor: "Hingga 15-20 tahun.",
       },
       telemarketing: {
-        keunggulanUtama: "Dana bridging tersedia mulai plafon kecil Rp 100 Juta dengan tim analis yang sangat komunikatif.",
-        personaIdeal: "Nasabah yang sisa hutangnya di bawah Rp 300 Juta dan butuh dana talangan bridging.",
-        pitchingScript: "'Pak/Bu, kalau di bank lain minimal bridging harus Rp 250 Jt - Rp 500 Jt, di Bank Ganesha plafon Rp 100 Jt pun sudah siap ditalangi pelunasannya oleh bank.'",
+        keunggulanUtama: "Ready Dana tersedia mulai plafon kecil Rp 100 Juta dengan tim analis yang sangat komunikatif.",
+        personaIdeal: "Nasabah yang sisa hutangnya di bawah Rp 300 Juta dan butuh fasilitas Ready Dana.",
+        pitchingScript: "'Pak/Bu, kalau di bank lain minimal ready dana harus Rp 250 Jt - Rp 500 Jt, di Bank Ganesha plafon Rp 100 Jt pun sudah siap ditalangi pelunasannya oleh bank.'",
         pantangan: "Karyawan kontrak atau nasabah dengan gaji di bawah Rp 10 Juta.",
       },
     },
@@ -793,7 +793,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "Menerima take over murni dan take over top up.",
+        skemaReadyDana: "Menerima take over murni dan take over top up.",
         minPlafondTO: "Rp 150.000.000.",
         minSisaTenor: "Minimal sisa pinjaman 12 bulan.",
         opsiTopUp: "Top up dana tunai sangat diakomodasi.",
@@ -841,7 +841,7 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         joinIncome: "Menerima join income suami-istri.",
       },
       takeOver: {
-        skemaBridging: "Menerima take over konvensional.",
+        skemaReadyDana: "Menerima take over konvensional.",
         minPlafondTO: "Rp 100.000.000.",
         minSisaTenor: "Minimal 12 bulan sisa hutang.",
         opsiTopUp: "Top up dana tunai tersedia.",
@@ -880,7 +880,7 @@ const DEFAULT_DETAIL: BankDetailedRAC = {
     joinIncome: "Bisa join income suami-istri resmi.",
   },
   takeOver: {
-    skemaBridging: "Menerima take over murni dan top up.",
+    skemaReadyDana: "Menerima take over murni dan top up.",
     minPlafondTO: "Rp 200.000.000.",
     minSisaTenor: "Minimal sisa pinjaman berjalan 12 bulan.",
     opsiTopUp: "Tersedia penambahan plafon top up.",
@@ -955,3 +955,4 @@ export function getBankTacticalGuide(bankName: string): BankTacticalGuide {
     detail: DEFAULT_DETAIL,
   };
 }
+
