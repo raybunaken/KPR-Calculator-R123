@@ -14,8 +14,14 @@ import {
   Search,
   Clock,
   Calendar,
+  Briefcase,
+  Zap,
+  MapPin,
+  ShieldCheck,
+  BookOpen,
+  Sparkles,
 } from "lucide-react";
-import type { SimulationResult, LoanInput } from "@/lib/types";
+import type { SimulationResult, LoanInput, BankRAC } from "@/lib/types";
 import { BANK_COLORS } from "@/lib/types";
 import {
   formatIDR,
@@ -23,7 +29,9 @@ import {
   formatPercent,
   extractRateTiers,
 } from "@/lib/calculator";
+import { getBankRac, getBankTacticalGuide } from "@/lib/rac-data";
 import AmortizationTable from "./AmortizationTable";
+import RacModal from "./RacModal";
 
 function parseDateScore(dStr?: string): number {
   if (!dStr) return 0;
@@ -77,11 +85,13 @@ type ViewMode = "eligible" | "all";
 interface SimulationResultsProps {
   results: SimulationResult[];
   input: LoanInput;
+  racList?: BankRAC[];
 }
 
 export default function SimulationResults({
   results,
   input,
+  racList = [],
 }: SimulationResultsProps) {
   const [sortKey, setSortKey] = useState<SortKey>("cicilan_fix");
   const [viewMode, setViewMode] = useState<ViewMode>("all"); // Default ke all karena RAC dimatikan
@@ -89,6 +99,9 @@ export default function SimulationResults({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBank, setSelectedBank] = useState<string>("all");
   const [selectedScheme, setSelectedScheme] = useState<string>("all");
+  const [selectedRacFilter, setSelectedRacFilter] = useState<string>("all");
+  const [showRacModal, setShowRacModal] = useState(false);
+  const [racModalBank, setRacModalBank] = useState<string | null>(null);
   const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
 
   const availableBanks = useMemo(
@@ -116,6 +129,20 @@ export default function SimulationResults({
 
     if (selectedScheme !== "all") {
       list = list.filter((r) => r.product.jenisBunga === selectedScheme);
+    }
+
+    if (selectedRacFilter !== "all" && racList.length > 0) {
+      list = list.filter((r) => {
+        const rac = getBankRac(r.product.bank, r.product.syariah, racList);
+        if (!rac) return true;
+        if (selectedRacFilter === "kontrak")
+          return rac.statusKaryawan.includes("Karyawan Kontrak");
+        if (selectedRacFilter === "bridging")
+          return rac.readyDana.includes("Ya");
+        if (selectedRacFilter === "dp5")
+          return rac.dpMin <= 0.05;
+        return true;
+      });
     }
 
     if (searchQuery.trim()) {
@@ -148,7 +175,7 @@ export default function SimulationResults({
           return 0;
       }
     });
-  }, [displayed, sortKey, searchQuery, selectedBank, selectedScheme]);
+  }, [displayed, sortKey, searchQuery, selectedBank, selectedScheme, selectedRacFilter, racList]);
 
   const handleSelect = (code: string) => {
     setSelectedCodes((prev) => {
@@ -196,7 +223,20 @@ export default function SimulationResults({
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end text-xs shrink-0">
-            <span className="font-medium text-gray-500">Urutkan:</span>
+            <button
+              type="button"
+              onClick={() => {
+                setRacModalBank(null);
+                setShowRacModal(true);
+              }}
+              className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-gradient-to-r from-blue-700 to-[#0B2545] text-white hover:opacity-95 transition-all shadow-2xs cursor-pointer shrink-0"
+              title="Buka contekan syarat RAC & kebijakan 15 bank mitra"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-blue-200" />
+              <span>Kamus RAC Bank</span>
+            </button>
+
+            <span className="font-medium text-gray-500 hidden sm:inline">Urutkan:</span>
             <div className="flex items-center gap-1">
               <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
               <select
@@ -217,7 +257,7 @@ export default function SimulationResults({
           </div>
         </div>
 
-        {/* Row 2: Filter Bank + Filter Skema + Active Bunga Badge + Reset */}
+        {/* Row 2: Filter Bank + Filter Skema + Filter RAC Profil + Active Bunga Badge + Reset */}
         <div className="pt-2.5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2.5 text-xs">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-semibold text-gray-500 shrink-0">
@@ -250,6 +290,21 @@ export default function SimulationResults({
               <option value="Fixed">Fix • Floating</option>
             </select>
 
+            {/* Quick RAC Profil Filter Dropdown */}
+            <select
+              value={selectedRacFilter}
+              onChange={(e) => setSelectedRacFilter(e.target.value)}
+              className="text-xs font-semibold border border-blue-200 bg-blue-50/40 text-blue-900 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-2xs"
+              title="Filter cepat kriteria profil nasabah tanpa perlu isi form"
+            >
+              <option value="all">Semua Profil RAC</option>
+              <option value="kontrak">Bisa Karyawan Kontrak</option>
+              {input.kprType === "Take Over" && (
+                <option value="bridging">Ready Dana Bridging TO</option>
+              )}
+              <option value="dp5">DP Ringan (5%)</option>
+            </select>
+
             {/* Active Bunga Range Badge */}
             {input.rateRange && input.rateRange !== "all" && (
               <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0 flex items-center gap-1">
@@ -267,12 +322,16 @@ export default function SimulationResults({
             )}
 
             {/* Quick Reset Link */}
-            {(selectedBank !== "all" || selectedScheme !== "all" || searchQuery.trim() !== "") && (
+            {(selectedBank !== "all" ||
+              selectedScheme !== "all" ||
+              selectedRacFilter !== "all" ||
+              searchQuery.trim() !== "") && (
               <button
                 type="button"
                 onClick={() => {
                   setSelectedBank("all");
                   setSelectedScheme("all");
+                  setSelectedRacFilter("all");
                   setSearchQuery("");
                 }}
                 className="text-[11px] text-blue-600 hover:text-blue-800 underline font-semibold cursor-pointer ml-1"
@@ -306,6 +365,11 @@ export default function SimulationResults({
             input={input}
             isSelected={selectedCodes.includes(result.product.kode)}
             onSelect={() => handleSelect(result.product.kode)}
+            racList={racList}
+            onOpenRacModal={(bank) => {
+              setRacModalBank(bank);
+              setShowRacModal(true);
+            }}
           />
         ))}
         {filteredAndSorted.length === 0 && (
@@ -363,6 +427,14 @@ export default function SimulationResults({
           </button>
         </div>
       )}
+
+      {/* RAC Cheat-sheet Modal */}
+      <RacModal
+        isOpen={showRacModal}
+        onClose={() => setShowRacModal(false)}
+        racList={racList}
+        initialBank={racModalBank}
+      />
     </div>
   );
 }
@@ -375,6 +447,8 @@ function ProductCard({
   onToggle,
   isSelected,
   onSelect,
+  racList,
+  onOpenRacModal,
 }: {
   result: SimulationResult;
   input: LoanInput;
@@ -383,11 +457,16 @@ function ProductCard({
   onToggle: () => void;
   isSelected: boolean;
   onSelect: () => void;
+  racList?: BankRAC[];
+  onOpenRacModal: (bank: string) => void;
 }) {
   const { product, isEligible, ineligibilityReasons } = result;
   const bankColor = BANK_COLORS[product.bank] || "#3B82F6";
   const isTop3 = rank <= 3 && isEligible;
   const tiers = extractRateTiers(result.yearlySchedule, product.masaFix);
+  const [expandedTab, setExpandedTab] = useState<"amortisasi" | "rac">("amortisasi");
+  const rac = getBankRac(product.bank, product.syariah, racList);
+  const guide = getBankTacticalGuide(product.bank);
 
   return (
     <div
@@ -486,6 +565,81 @@ function ProductCard({
                 <span>Terakhir Update: {product.updatedAt || "Terbaru"}</span>
               </span>
             </p>
+
+            {/* RAC Micro-Badges (Zero-click reference for telemarketer) */}
+            {rac && (
+              <div className="flex items-center gap-1.5 mt-2 flex-wrap text-[11px]">
+                {/* 1. Status Pekerjaan */}
+                <span
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold border ${
+                    rac.statusKaryawan.includes("Karyawan Kontrak")
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                      : "bg-blue-50 text-blue-800 border-blue-200"
+                  }`}
+                  title={`Status Pekerjaan: ${rac.statusKaryawan.join(", ")}`}
+                >
+                  <Briefcase className="w-3 h-3 text-current" />
+                  <span>
+                    {rac.statusKaryawan.includes("Karyawan Kontrak")
+                      ? "Tetap & Kontrak"
+                      : "Hanya Tetap"}
+                  </span>
+                </span>
+
+                {/* 2. Dana Talangan Take Over */}
+                {input.kprType === "Take Over" && (
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold border ${
+                      rac.readyDana.includes("Ya")
+                        ? "bg-teal-50 text-teal-800 border-teal-200"
+                        : "bg-gray-100 text-gray-700 border-gray-200"
+                    }`}
+                    title={
+                      rac.readyDana.includes("Ya")
+                        ? "Bank menyediakan fasilitas pelunasan / bridging take over"
+                        : "Nasabah wajib menyediakan dana pelunasan sendiri"
+                    }
+                  >
+                    <Zap className="w-3 h-3 text-teal-600" />
+                    <span>
+                      {rac.readyDana.includes("Ya")
+                        ? "Dana Bridging: Siap"
+                        : "Dana Sendiri"}
+                    </span>
+                  </span>
+                )}
+
+                {/* 3. Min DP */}
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                  <span>Min DP {Math.round(rac.dpMin * 100)}%</span>
+                </span>
+
+                {/* 4. Area Cover */}
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium bg-slate-50 text-slate-700 border border-slate-200"
+                  title={`Cakupan Wilayah: ${rac.area.join(", ")}`}
+                >
+                  <MapPin className="w-3 h-3 text-slate-400" />
+                  <span>
+                    {rac.area.length > 5
+                      ? "Cover Nasional"
+                      : rac.area.slice(0, 2).join(", ")}
+                  </span>
+                </span>
+
+                {/* Quick Link to Modal */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenRacModal(product.bank);
+                  }}
+                  className="text-blue-600 hover:text-blue-800 underline font-semibold text-[11px] ml-0.5 cursor-pointer inline-flex items-center gap-0.5"
+                >
+                  <span>Syarat Bank ↗</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -681,13 +835,105 @@ function ProductCard({
         </div>
       )}
 
-      {/* 5. Expanded Amortization Detail */}
+      {/* 5. Expanded Section (Amortisasi + Pedoman RAC) */}
       {isExpanded && isEligible && (
         <div className="border-t border-gray-200 bg-white p-5 space-y-4">
-          <AmortizationTable
-            yearlySchedule={result.yearlySchedule}
-            masaFix={product.masaFix}
-          />
+          <div className="flex items-center justify-between border-b border-gray-100 pb-3 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setExpandedTab("amortisasi")}
+                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                  expandedTab === "amortisasi"
+                    ? "bg-[#0B2545] text-white shadow-2xs"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                Jadwal Angsuran (Amortisasi)
+              </button>
+              <button
+                type="button"
+                onClick={() => setExpandedTab("rac")}
+                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  expandedTab === "rac"
+                    ? "bg-blue-700 text-white shadow-2xs"
+                    : "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/60"
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Pedoman RAC & Kriteria {product.bank}</span>
+              </button>
+            </div>
+            <span className="text-[11px] text-gray-400 font-medium hidden sm:inline">
+              Contekan Taktis Telemarketer
+            </span>
+          </div>
+
+          {expandedTab === "amortisasi" ? (
+            <AmortizationTable
+              yearlySchedule={result.yearlySchedule}
+              masaFix={product.masaFix}
+            />
+          ) : (
+            <div className="space-y-3.5 animate-in fade-in duration-150">
+              <div className="grid sm:grid-cols-3 gap-3 text-xs">
+                {/* 1. Status Pekerjaan */}
+                <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80">
+                  <p className="font-bold text-gray-800 flex items-center gap-1.5 text-xs mb-1.5">
+                    <Briefcase className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Profil Pekerjaan & Usia</span>
+                  </p>
+                  <p className="text-gray-600 leading-relaxed text-[11px]">
+                    {guide.karyawanNote}
+                  </p>
+                  <div className="mt-2 pt-2 border-t border-gray-200/60 text-[10px] text-gray-400">
+                    Batas usia lunas: Karyawan maks 55-65 th, Pengusaha maks 65-70 th.
+                  </div>
+                </div>
+
+                {/* 2. Take Over & Bridging */}
+                <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80">
+                  <p className="font-bold text-gray-800 flex items-center gap-1.5 text-xs mb-1.5">
+                    <Zap className="w-3.5 h-3.5 text-teal-600" />
+                    <span>Ketentuan Take Over</span>
+                  </p>
+                  <p className="text-gray-600 leading-relaxed text-[11px]">
+                    {guide.takeOverNote}
+                  </p>
+                  <div className="mt-2 pt-2 border-t border-gray-200/60 text-[10px] text-gray-400">
+                    Kesiapan dana talangan: {rac?.readyDana.includes("Ya") ? "Tersedia dari Bank" : "Wajib Dana Sendiri"}.
+                  </div>
+                </div>
+
+                {/* 3. Agunan & Wilayah */}
+                <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80">
+                  <p className="font-bold text-gray-800 flex items-center gap-1.5 text-xs mb-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-slate-600" />
+                    <span>Agunan & Wilayah Cover</span>
+                  </p>
+                  <p className="text-gray-600 leading-relaxed text-[11px]">
+                    {guide.propertyNote}
+                  </p>
+                  <div className="mt-2 pt-2 border-t border-gray-200/60 text-[10px] text-gray-400 truncate" title={rac?.area.join(", ")}>
+                    Wilayah: {rac ? rac.area.slice(0, 4).join(", ") + "..." : "Nasional"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Pitching Tips Banner */}
+              <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/60 border border-blue-200/80 rounded-xl p-3 text-xs flex items-start gap-2.5">
+                <Sparkles className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-extrabold text-blue-900 block text-xs">
+                    Poin Keunggulan Bank untuk Disampaikan ke Nasabah:
+                  </span>
+                  <p className="text-blue-800 text-[11px] mt-0.5 leading-relaxed">
+                    "{guide.sellingPoints}"
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

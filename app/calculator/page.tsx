@@ -130,7 +130,11 @@ export default function CalculatorPage() {
             ) : isCalculating ? (
               <LoadingState />
             ) : (
-              <SimulationResults results={results} input={loanInput} />
+              <SimulationResults
+                results={results}
+                input={loanInput}
+                racList={racList}
+              />
             )}
           </div>
         </div>
