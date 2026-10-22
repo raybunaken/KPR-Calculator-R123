@@ -13,12 +13,9 @@ import {
   ChevronUp,
   Coins,
   BadgePercent,
-  CheckCircle2,
-  AlertTriangle,
-  Compass,
   FileText,
   CreditCard,
-  Building,
+  Building2,
 } from "lucide-react";
 import type { BankRAC } from "@/lib/types";
 import { BANK_COLORS } from "@/lib/types";
@@ -63,7 +60,6 @@ export default function RacModal({
           r.bank.toLowerCase().includes(q) ||
           r.area.some((a) => a.toLowerCase().includes(q)) ||
           guide.areaCoverNote.toLowerCase().includes(q) ||
-          guide.personaNasabah.toLowerCase().includes(q) ||
           guide.detail.agunan.wilayahCover.some((w) => w.toLowerCase().includes(q))
         );
       });
@@ -102,10 +98,10 @@ export default function RacModal({
             </div>
             <div>
               <h3 className="font-extrabold text-base leading-tight">
-                Kamus RAC Bank & Panduan Kriteria Telemarketing
+                Kamus RAC Bank & Kriteria Kebijakan Kredit
               </h3>
               <p className="text-xs text-blue-200 mt-0.5">
-                Contekan resmi kriteria penerimaan, dana bridging take over, DP minimal, dan agunan per bank
+                Kamus resmi kriteria penerimaan nasabah, batas gaji, dana bridging take over, DP minimal, dan agunan
               </p>
             </div>
           </div>
@@ -125,7 +121,7 @@ export default function RacModal({
             <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Cari bank, kota/wilayah (e.g. Bandung, Surabaya), atau kriteria..."
+              placeholder="Cari bank atau kota/wilayah cakupan (e.g. Bandung, Surabaya)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-24 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] shadow-2xs"
@@ -239,7 +235,7 @@ export default function RacModal({
                   className="p-4 cursor-pointer hover:bg-gray-50/60 transition-colors select-none"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2.5">
-                    {/* Bank Brand Tag (Vibrant brand color like calculator) */}
+                    {/* Bank Brand Tag */}
                     <div className="flex items-center gap-2">
                       <span
                         style={{ backgroundColor: bankColor, color: textColor }}
@@ -332,8 +328,8 @@ export default function RacModal({
                   </div>
                 </div>
 
-                {/* Summary Row (Always Visible as Quick Glances) */}
-                <div className="px-4 pb-3 grid sm:grid-cols-3 gap-2.5 text-xs border-b border-gray-100">
+                {/* Ringkasan 3 Kolom (TETAP ADA SEBAGAI SUMMARY CEPAT) */}
+                <div className="px-4 pb-3.5 grid sm:grid-cols-3 gap-2.5 text-xs border-b border-gray-100">
                   <div className="bg-gray-50/90 rounded-lg p-2.5 border border-gray-200/60">
                     <p className="font-bold text-gray-800 text-[11px] mb-1 flex items-center gap-1">
                       <Briefcase className="w-3 h-3 text-blue-600" />
@@ -365,13 +361,13 @@ export default function RacModal({
                   </div>
                 </div>
 
-                {/* DRILL DOWN EXPANDED SECTION (Divided by Detailed Categories/Points) */}
+                {/* DRILL DOWN EXPANDED SECTION (Murni Kriteria & Parameter RAC per Kategori & Poin) */}
                 {isExpanded && (
-                  <div className="bg-slate-50/80 p-4 border-t border-gray-200/80 space-y-4 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="bg-slate-50/80 p-4 border-t border-gray-200/80 space-y-3.5 animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="flex items-center justify-between border-b border-gray-200 pb-2">
                       <h4 className="font-extrabold text-xs uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
                         <FileText className="w-4 h-4 text-blue-600" />
-                        <span>Kamus RAC Terperinci: Bank {rac.bank}</span>
+                        <span>Kamus Detail Kebijakan RAC: Bank {rac.bank}</span>
                       </h4>
                       <span className="text-[11px] text-gray-500 font-medium">
                         Klik kartu untuk menutup kembali
@@ -387,19 +383,19 @@ export default function RacModal({
                         </div>
                         <ul className="space-y-1.5 text-[11.5px] text-gray-700">
                           <li>
-                            <strong className="text-gray-900">• Gaji Karyawan:</strong> {guide.detail.penghasilan.gajiKaryawan}
+                            <strong className="text-gray-900">• Gaji Minimal Karyawan:</strong> {guide.detail.penghasilan.gajiKaryawan}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Income Pengusaha:</strong> {guide.detail.penghasilan.incomePengusaha}
+                            <strong className="text-gray-900">• Minimal Income Pengusaha:</strong> {guide.detail.penghasilan.incomePengusaha}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Syarat Karyawan Tetap:</strong> {guide.detail.penghasilan.syaratKaryawanTetap}
+                            <strong className="text-gray-900">• Ketentuan Karyawan Tetap:</strong> {guide.detail.penghasilan.syaratKaryawanTetap}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Syarat Karyawan Kontrak:</strong> {guide.detail.penghasilan.syaratKaryawanKontrak}
+                            <strong className="text-gray-900">• Ketentuan Karyawan Kontrak:</strong> {guide.detail.penghasilan.syaratKaryawanKontrak}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Syarat Pengusaha:</strong> {guide.detail.penghasilan.syaratPengusaha}
+                            <strong className="text-gray-900">• Ketentuan Pengusaha / Wirausaha:</strong> {guide.detail.penghasilan.syaratPengusaha}
                           </li>
                           <li>
                             <strong className="text-gray-900">• Ketentuan Join Income:</strong> {guide.detail.penghasilan.joinIncome}
@@ -411,11 +407,11 @@ export default function RacModal({
                       <div className="bg-white rounded-xl p-3.5 border border-gray-200 shadow-2xs space-y-2">
                         <div className="flex items-center gap-1.5 text-teal-900 font-bold border-b border-gray-100 pb-1.5">
                           <Zap className="w-4 h-4 text-teal-600" />
-                          <span>2. Ketentuan Take Over & Bridging</span>
+                          <span>2. Ketentuan Take Over & Dana Bridging</span>
                         </div>
                         <ul className="space-y-1.5 text-[11.5px] text-gray-700">
                           <li>
-                            <strong className="text-gray-900">• Skema Bridging / Talangan:</strong> {guide.detail.takeOver.skemaBridging}
+                            <strong className="text-gray-900">• Skema Bridging (Talangan Bank):</strong> {guide.detail.takeOver.skemaBridging}
                           </li>
                           <li>
                             <strong className="text-gray-900">• Batas Minimal Plafon TO:</strong> {guide.detail.takeOver.minPlafondTO}
@@ -427,33 +423,55 @@ export default function RacModal({
                             <strong className="text-gray-900">• Opsi Top Up Dana Tunai:</strong> {guide.detail.takeOver.opsiTopUp}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Ketentuan Bank Asal:</strong> {guide.detail.takeOver.ketentuanBankAsal}
+                            <strong className="text-gray-900">• Jenis Bank Asal yang Diterima:</strong> {guide.detail.takeOver.ketentuanBankAsal}
                           </li>
                         </ul>
                       </div>
 
-                      {/* Kategori 3: Agunan, Legalitas & Wilayah Cover */}
+                      {/* Kategori 3: Agunan & Legalitas Bangunan */}
                       <div className="bg-white rounded-xl p-3.5 border border-gray-200 shadow-2xs space-y-2">
                         <div className="flex items-center gap-1.5 text-rose-900 font-bold border-b border-gray-100 pb-1.5">
                           <MapPin className="w-4 h-4 text-rose-600" />
-                          <span>3. Agunan & Cakupan Wilayah</span>
+                          <span>3. Kriteria Agunan & Legalitas Bangunan</span>
                         </div>
                         <ul className="space-y-1.5 text-[11.5px] text-gray-700">
                           <li>
-                            <strong className="text-gray-900">• Akses Jalan Depan Rumah:</strong> {guide.detail.agunan.aksesJalan}
+                            <strong className="text-gray-900">• Akses Lebar Jalan Depan:</strong> {guide.detail.agunan.aksesJalan}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Sertifikat Agunan:</strong> {guide.detail.agunan.jenisSertifikat}
+                            <strong className="text-gray-900">• Jenis Sertifikat Diterima:</strong> {guide.detail.agunan.jenisSertifikat}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• IMB / PBG & PBB:</strong> {guide.detail.agunan.dokumenBangunan}
+                            <strong className="text-gray-900">• Dokumen Bangunan (IMB/PBG/PBB):</strong> {guide.detail.agunan.dokumenBangunan}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Batasan Lokasi:</strong> {guide.detail.agunan.batasanLokasi}
+                            <strong className="text-gray-900">• Batasan Lokasi & Lingkungan:</strong> {guide.detail.agunan.batasanLokasi}
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Kategori 4: Parameter Finansial & Cakupan Wilayah */}
+                      <div className="bg-white rounded-xl p-3.5 border border-gray-200 shadow-2xs space-y-2">
+                        <div className="flex items-center gap-1.5 text-indigo-900 font-bold border-b border-gray-100 pb-1.5">
+                          <CreditCard className="w-4 h-4 text-indigo-600" />
+                          <span>4. Parameter Kredit & Cakupan Wilayah</span>
+                        </div>
+                        <ul className="space-y-1.5 text-[11.5px] text-gray-700">
+                          <li>
+                            <strong className="text-gray-900">• Down Payment (DP) Minimal:</strong> {guide.detail.finansial.dpMinimal}
                           </li>
                           <li>
-                            <strong className="text-gray-900">• Wilayah Cakupan (Coverage Area):</strong>
-                            <div className="flex flex-wrap gap-1 mt-1">
+                            <strong className="text-gray-900">• Skema Suku Bunga / Akad:</strong> {guide.detail.finansial.skemaBunga}
+                          </li>
+                          <li>
+                            <strong className="text-gray-900">• Ketentuan Penalti Pelunasan:</strong> {guide.detail.finansial.penaltiPelunasan}
+                          </li>
+                          <li>
+                            <strong className="text-gray-900">• Batas Maksimal Tenor Pinjaman:</strong> {guide.detail.finansial.maksimalTenor}
+                          </li>
+                          <li className="pt-1.5 border-t border-gray-100">
+                            <strong className="text-gray-900 block mb-1">• Daftar Kota & Wilayah Cakupan:</strong>
+                            <div className="flex flex-wrap gap-1">
                               {guide.detail.agunan.wilayahCover.map((w) => (
                                 <span
                                   key={w}
@@ -465,50 +483,6 @@ export default function RacModal({
                             </div>
                           </li>
                         </ul>
-                      </div>
-
-                      {/* Kategori 4: Finansial & Ketentuan Kredit */}
-                      <div className="bg-white rounded-xl p-3.5 border border-gray-200 shadow-2xs space-y-2">
-                        <div className="flex items-center gap-1.5 text-indigo-900 font-bold border-b border-gray-100 pb-1.5">
-                          <CreditCard className="w-4 h-4 text-indigo-600" />
-                          <span>4. Parameter Finansial & Kredit</span>
-                        </div>
-                        <ul className="space-y-1.5 text-[11.5px] text-gray-700">
-                          <li>
-                            <strong className="text-gray-900">• DP Minimal:</strong> {guide.detail.finansial.dpMinimal}
-                          </li>
-                          <li>
-                            <strong className="text-gray-900">• Skema Bunga / Akad:</strong> {guide.detail.finansial.skemaBunga}
-                          </li>
-                          <li>
-                            <strong className="text-gray-900">• Ketentuan Penalti Pelunasan:</strong> {guide.detail.finansial.penaltiPelunasan}
-                          </li>
-                          <li>
-                            <strong className="text-gray-900">• Maksimal Tenor Pinjaman:</strong> {guide.detail.finansial.maksimalTenor}
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    {/* Kategori 5: Panduan Taktis Telemarketing */}
-                    <div className="bg-gradient-to-r from-blue-900 to-[#0B2545] text-white rounded-xl p-3.5 space-y-2">
-                      <div className="flex items-center gap-1.5 text-teal-300 font-bold border-b border-blue-800/80 pb-1.5">
-                        <Compass className="w-4 h-4 text-teal-300" />
-                        <span>5. Panduan Taktis Telemarketing (Persona & Pitching)</span>
-                      </div>
-                      <div className="grid sm:grid-cols-2 gap-3 text-[11.5px] text-blue-100">
-                        <div>
-                          <p className="font-bold text-white mb-0.5">• Persona Nasabah Ideal:</p>
-                          <p className="leading-snug">{guide.detail.telemarketing.personaIdeal}</p>
-                          <p className="font-bold text-rose-300 mt-2 mb-0.5">• Hal yang Perlu Dihindari (Pantangan):</p>
-                          <p className="leading-snug text-rose-200">{guide.detail.telemarketing.pantangan}</p>
-                        </div>
-                        <div>
-                          <p className="font-bold text-white mb-0.5">• Script / Kiat Pitching:</p>
-                          <p className="leading-relaxed bg-white/10 p-2.5 rounded-lg border border-white/10 italic text-teal-100">
-                            {guide.detail.telemarketing.pitchingScript}
-                          </p>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -527,7 +501,7 @@ export default function RacModal({
         {/* Footer */}
         <div className="px-5 py-3 border-t border-gray-100 bg-gray-50 flex items-center justify-between text-xs text-gray-500 shrink-0">
           <span className="text-[11px]">
-            *Klik setiap kartu bank untuk membuka drill-down kriteria terperinci
+            *Kamus RAC murni memuat kriteria dan parameter kebijakan kredit resmi perbankan
           </span>
           <button
             type="button"
