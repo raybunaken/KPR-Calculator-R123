@@ -62,11 +62,15 @@ export default function LoanForm({
 
   const isTO = form.kprType === "Take Over";
   const dpAmount = form.propertyPrice * form.dpPercent;
+  const basePlafondSecondary = form.propertyPrice - dpAmount;
+  const biayaSecondary = basePlafondSecondary * 0.05;
   const biayaTakeOver = isTO ? form.currentOutstanding * 0.05 : 0;
   const basePlafondTO =
     form.currentOutstanding + (form.readyDana === "Tidak" ? biayaTakeOver : 0);
 
-  const plafond = isTO ? basePlafondTO : form.propertyPrice - dpAmount;
+  const plafond = isTO
+    ? basePlafondTO
+    : basePlafondSecondary + (form.readyDana === "Tidak" ? biayaSecondary : 0);
 
   const mathFloatingInstallment = calculateMonthlyInstallment(
     form.currentOutstanding,
@@ -244,10 +248,55 @@ export default function LoanForm({
                 <span>50%</span>
               </div>
               <div className="mt-2 text-sm">
-                <span className="text-gray-500">Plafond KPR: </span>
+                <span className="text-gray-500">Plafond Pokok KPR: </span>
                 <span className="font-semibold text-gray-800">
-                  {formatIDRFull(plafond)}
+                  {formatIDRFull(basePlafondSecondary)}
                 </span>
+              </div>
+            </div>
+
+            {/* Ready Dana for Biaya KPR Secondary */}
+            <div>
+              <Label>Status Dana (Biaya KPR 5%)</Label>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                {(["Ya", "Tidak"] as ReadyDana[]).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, readyDana: r }))}
+                    className={`p-2.5 rounded-xl border text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      form.readyDana === r
+                        ? "border-blue-500 bg-blue-50 text-blue-700 font-semibold shadow-2xs"
+                        : "border-gray-200 hover:border-gray-300 text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    {r === "Ya" ? (
+                      <>
+                        <Wallet className="w-3.5 h-3.5" /> Ready Dana (Cash)
+                      </>
+                    ) : (
+                      <>
+                        <Landmark className="w-3.5 h-3.5" /> Masuk ke Plafond
+                      </>
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-2.5 p-3 bg-blue-50/40 rounded-xl border border-blue-100/70 text-xs space-y-1.5">
+                <div className="flex justify-between items-center text-gray-600">
+                  <span>Biaya KPR (5%):</span>
+                  <span className="font-semibold text-orange-600">
+                    {formatIDRFull(biayaSecondary)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-1 border-t border-blue-100/60">
+                  <span className="text-gray-600 font-medium">
+                    Total Plafond KPR:
+                  </span>
+                  <span className="font-bold text-blue-700">
+                    {formatIDRFull(plafond)}
+                  </span>
+                </div>
               </div>
             </div>
           </>

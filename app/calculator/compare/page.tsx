@@ -705,6 +705,46 @@ function CompareContent() {
                   </div>
                 </>
               )}
+              {input.kprType !== "Take Over" && (
+                <>
+                  <div>
+                    <span className="text-gray-400 font-medium block mb-1">
+                      Harga Properti
+                    </span>
+                    <span className="text-sm font-bold text-gray-800">
+                      {formatIDRFull(input.propertyPrice || 0)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 font-medium block mb-1">
+                      Uang Muka (DP {Math.round((input.dpPercent || 0.15) * 100)}%)
+                    </span>
+                    <span className="text-sm font-bold text-gray-800">
+                      {formatIDRFull((input.propertyPrice || 0) * (input.dpPercent || 0.15))}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 font-medium block mb-1">
+                      Biaya KPR (5%)
+                    </span>
+                    {input.readyDana === "Tidak" ? (
+                      <span className="text-sm font-bold text-blue-600">
+                        {formatIDRFull(((input.propertyPrice || 0) * (1 - (input.dpPercent || 0.15))) * 0.05)}{" "}
+                        <span className="text-[10px] text-gray-400 font-normal">
+                          (Masuk Plafond)
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-sm font-bold text-orange-600">
+                        {formatIDRFull(((input.propertyPrice || 0) * (1 - (input.dpPercent || 0.15))) * 0.05)}{" "}
+                        <span className="text-[10px] text-gray-400 font-normal">
+                          (Siapkan Cash)
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -1749,22 +1789,33 @@ function ReportPage1Content({
               ))}
             </tr>
 
-            {/* Row 3: Biaya Take Over (5%) */}
-            {input.kprType === "Take Over" && (
-              <tr className="even:bg-slate-50/70">
-                <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
-                  Est. Biaya Take Over (5%)
-                </td>
-                {results.map((r) => (
+            {/* Row 3: Est. Biaya Proses (5%) */}
+            <tr className="even:bg-slate-50/70">
+              <td className="px-3 py-1 font-semibold text-slate-700 border-r border-slate-200">
+                {input.kprType === "Take Over"
+                  ? "Est. Biaya Take Over (5%)"
+                  : "Est. Biaya KPR (5%)"}
+              </td>
+              {results.map((r) => {
+                const fee =
+                  input.kprType === "Take Over"
+                    ? (input.currentOutstanding || 0) * 0.05
+                    : ((input.propertyPrice || 0) *
+                        (1 - (input.dpPercent || 0.15))) *
+                      0.05;
+                return (
                   <td
                     key={r.product.kode}
                     className="px-2.5 py-1 text-right font-medium text-amber-800 border-r border-slate-200 last:border-r-0"
                   >
-                    {formatIDRFull((input.currentOutstanding || 0) * 0.05)}
+                    {formatIDRFull(fee)}{" "}
+                    <span className="text-[9px] text-slate-500 font-normal">
+                      ({input.readyDana === "Tidak" ? "Masuk Plafond" : "Cash"})
+                    </span>
                   </td>
-                ))}
-              </tr>
-            )}
+                );
+              })}
+            </tr>
 
             {/* Row 4: Current Monthly Installment */}
             {input.kprType === "Take Over" && (
