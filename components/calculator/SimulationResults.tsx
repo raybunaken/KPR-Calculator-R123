@@ -29,7 +29,7 @@ import {
   formatPercent,
   extractRateTiers,
 } from "@/lib/calculator";
-import { getBankRac, getBankTacticalGuide } from "@/lib/rac-data";
+import { getBankRac } from "@/lib/rac-data";
 import AmortizationTable from "./AmortizationTable";
 import RacModal from "./RacModal";
 
@@ -464,9 +464,7 @@ function ProductCard({
   const bankColor = BANK_COLORS[product.bank] || "#3B82F6";
   const isTop3 = rank <= 3 && isEligible;
   const tiers = extractRateTiers(result.yearlySchedule, product.masaFix);
-  const [expandedTab, setExpandedTab] = useState<"amortisasi" | "rac">("amortisasi");
-  const rac = getBankRac(product.bank, product.syariah, racList);
-  const guide = getBankTacticalGuide(product.bank);
+
 
   return (
     <div
@@ -518,30 +516,25 @@ function ProductCard({
           </div>
 
           <div className="flex-1 min-w-0 cursor-pointer" onClick={onToggle}>
-            <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+            <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
               <span
                 className="text-[11px] font-bold px-2 py-0.5 rounded-md text-white shadow-2xs"
                 style={{ backgroundColor: bankColor }}
               >
                 {product.bank}
               </span>
-              {product.jenisBunga === "Berjenjang" && (
-                <span className="text-[11px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-md font-medium">
-                  Berjenjang (Step-Up)
-                </span>
-              )}
-              {product.jenisBunga === "Single Rate" && (
-                <span className="text-[11px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-medium">
-                  Single Rate (Flat)
-                </span>
-              )}
-              {product.jenisBunga === "Fixed" && (
-                <span className="text-[11px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md font-medium">
-                  Fixed
-                </span>
-              )}
+
+              {/* Suku Bunga Utama (Langsung Terlihat di Header) */}
+              <span className="text-[11px] font-bold bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md">
+                {product.jenisBunga === "Berjenjang"
+                  ? `Berjenjang (${tiers.map((t) => formatPercent(t.rate)).join(" → ")})`
+                  : product.jenisBunga === "Single Rate"
+                    ? `${formatPercent(product.rates[0])} Flat s.d Lunas`
+                    : `${formatPercent(product.rates[0])} Fix ${product.masaFix} Thn · Float ${formatPercent(result.floatingRate)}`}
+              </span>
+
               {product.syariah && (
-                <span className="text-[11px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md font-medium">
+                <span className="text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold">
                   Syariah
                 </span>
               )}
@@ -553,93 +546,14 @@ function ProductCard({
             >
               {product.nama}
             </h4>
-            <p className="text-xs text-gray-500 mt-0.5 font-medium flex items-center gap-1.5 flex-wrap">
-              <span>
-                {product.jenisBunga === "Single Rate"
-                  ? `Flat s.d Lunas · Tenor ${result.tenorYears} th`
-                  : `Promo ${product.masaFix} th · Tenor ${result.tenorYears} th`}
-              </span>
-              <span>·</span>
+
+            {/* Subtitle Ringkas: Hanya Tanggal Update Terverifikasi */}
+            <div className="mt-1 flex items-center gap-1.5 text-[11px] text-gray-500 font-medium">
               <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60 shadow-2xs">
                 <Clock className="w-3 h-3 text-emerald-600 shrink-0" />
                 <span>Terakhir Update: {product.updatedAt || "Terbaru"}</span>
               </span>
-            </p>
-
-            {/* RAC Micro-Badges (Zero-click reference for telemarketer) */}
-            {rac && (
-              <div className="flex items-center gap-1.5 mt-2 flex-wrap text-[11px]">
-                {/* 1. Status Pekerjaan */}
-                <span
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold border ${
-                    rac.statusKaryawan.includes("Karyawan Kontrak")
-                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                      : "bg-blue-50 text-blue-800 border-blue-200"
-                  }`}
-                  title={`Status Pekerjaan: ${rac.statusKaryawan.join(", ")}`}
-                >
-                  <Briefcase className="w-3 h-3 text-current" />
-                  <span>
-                    {rac.statusKaryawan.includes("Karyawan Kontrak")
-                      ? "Tetap & Kontrak"
-                      : "Hanya Tetap"}
-                  </span>
-                </span>
-
-                {/* 2. Dana Talangan Take Over */}
-                {input.kprType === "Take Over" && (
-                  <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold border ${
-                      rac.readyDana.includes("Ya")
-                        ? "bg-teal-50 text-teal-800 border-teal-200"
-                        : "bg-gray-100 text-gray-700 border-gray-200"
-                    }`}
-                    title={
-                      rac.readyDana.includes("Ya")
-                        ? "Bank menyediakan fasilitas pelunasan Ready Dana take over"
-                        : "Nasabah wajib menyediakan dana pelunasan sendiri"
-                    }
-                  >
-                    <Zap className="w-3 h-3 text-teal-600" />
-                    <span>
-                      {rac.readyDana.includes("Ya")
-                        ? "Ready Dana: Ya"
-                        : "Dana Sendiri"}
-                    </span>
-                  </span>
-                )}
-
-                {/* 3. Min DP */}
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                  <span>Min DP {Math.round(rac.dpMin * 100)}%</span>
-                </span>
-
-                {/* 4. Area Cover */}
-                <span
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium bg-slate-50 text-slate-700 border border-slate-200"
-                  title={`Cakupan Wilayah: ${rac.area.join(", ")}`}
-                >
-                  <MapPin className="w-3 h-3 text-slate-400" />
-                  <span>
-                    {rac.area.length > 5
-                      ? "Cover Nasional"
-                      : rac.area.slice(0, 2).join(", ")}
-                  </span>
-                </span>
-
-                {/* Quick Link to Modal */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenRacModal(product.bank);
-                  }}
-                  className="text-blue-600 hover:text-blue-800 underline font-semibold text-[11px] ml-0.5 cursor-pointer inline-flex items-center gap-0.5"
-                >
-                  <span>Syarat Bank ↗</span>
-                </button>
-              </div>
-            )}
+            </div>
           </div>
         </div>
 
@@ -780,46 +694,7 @@ function ProductCard({
         </div>
       )}
 
-      {/* 3. Bottom Key Stats Strip */}
-      {isEligible && (
-        <div className="px-5 py-3 bg-gray-50/80 border-t border-gray-100/90 flex flex-wrap items-center justify-between gap-y-2 gap-x-6 text-xs">
-          <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
-            <StatPill
-              label="Total Angsuran"
-              value={formatIDR(result.totalInstallmentAll)}
-            />
-            <StatPill
-              label="Total Bunga"
-              value={formatIDR(result.totalInterest)}
-              accent
-            />
-            {product.jenisBunga === "Berjenjang" ? (
-              <StatPill
-                label="Skema Suku Bunga"
-                value={`Berjenjang (${tiers.map((t) => formatPercent(t.rate)).join(" → ")})`}
-                accent
-              />
-            ) : product.jenisBunga === "Single Rate" ? (
-              <StatPill
-                label="Suku Bunga"
-                value={`${formatPercent(product.rates[0])} Flat Tetap`}
-              />
-            ) : (
-              <>
-                <StatPill
-                  label="Rate Fix"
-                  value={formatPercent(product.rates[0])}
-                />
-                <StatPill
-                  label="Rate Float"
-                  value={formatPercent(result.floatingRate)}
-                  accent
-                />
-              </>
-            )}
-          </div>
-        </div>
-      )}
+
 
       {/* 4. Ineligibility reasons */}
       {!isEligible && ineligibilityReasons.length > 0 && (
@@ -835,105 +710,27 @@ function ProductCard({
         </div>
       )}
 
-      {/* 5. Expanded Section (Amortisasi + Pedoman RAC) */}
+      {/* 5. Expanded Section (Jadwal Angsuran Amortisasi Murni) */}
       {isExpanded && isEligible && (
         <div className="border-t border-gray-200 bg-white p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-gray-100 pb-3 flex-wrap gap-2">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setExpandedTab("amortisasi")}
-                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                  expandedTab === "amortisasi"
-                    ? "bg-[#0B2545] text-white shadow-2xs"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                Jadwal Angsuran (Amortisasi)
-              </button>
-              <button
-                type="button"
-                onClick={() => setExpandedTab("rac")}
-                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                  expandedTab === "rac"
-                    ? "bg-blue-700 text-white shadow-2xs"
-                    : "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/60"
-                }`}
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Pedoman RAC & Kriteria {product.bank}</span>
-              </button>
+            <div>
+              <h5 className="text-xs font-bold text-gray-900">
+                Jadwal Angsuran & Porsi Pokok/Bunga (Amortisasi)
+              </h5>
+              <p className="text-[11px] text-gray-500">
+                Rincian angsuran per tahun selama tenor {result.tenorYears} tahun
+              </p>
             </div>
-            <span className="text-[11px] text-gray-400 font-medium hidden sm:inline">
-              Contekan Taktis Telemarketer
+            <span className="text-[11px] text-gray-400 font-medium">
+              Tenor {result.tenorYears} Tahun
             </span>
           </div>
 
-          {expandedTab === "amortisasi" ? (
-            <AmortizationTable
-              yearlySchedule={result.yearlySchedule}
-              masaFix={product.masaFix}
-            />
-          ) : (
-            <div className="space-y-3.5 animate-in fade-in duration-150">
-              <div className="grid sm:grid-cols-3 gap-3 text-xs">
-                {/* 1. Status Pekerjaan */}
-                <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80">
-                  <p className="font-bold text-gray-800 flex items-center gap-1.5 text-xs mb-1.5">
-                    <Briefcase className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Profil Pekerjaan & Usia</span>
-                  </p>
-                  <p className="text-gray-600 leading-relaxed text-[11px]">
-                    {guide.karyawanNote}
-                  </p>
-                  <div className="mt-2 pt-2 border-t border-gray-200/60 text-[10px] text-gray-400">
-                    Batas usia lunas: Karyawan maks 55-65 th, Pengusaha maks 65-70 th.
-                  </div>
-                </div>
-
-                {/* 2. Take Over & Ready Dana */}
-                <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80">
-                  <p className="font-bold text-gray-800 flex items-center gap-1.5 text-xs mb-1.5">
-                    <Zap className="w-3.5 h-3.5 text-teal-600" />
-                    <span>Ketentuan Take Over</span>
-                  </p>
-                  <p className="text-gray-600 leading-relaxed text-[11px]">
-                    {guide.takeOverNote}
-                  </p>
-                  <div className="mt-2 pt-2 border-t border-gray-200/60 text-[10px] text-gray-400">
-                    Kesiapan dana talangan: {rac?.readyDana.includes("Ya") ? "Tersedia dari Bank" : "Wajib Dana Sendiri"}.
-                  </div>
-                </div>
-
-                {/* 3. Agunan & Wilayah */}
-                <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-200/80">
-                  <p className="font-bold text-gray-800 flex items-center gap-1.5 text-xs mb-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-600" />
-                    <span>Agunan & Wilayah Cover</span>
-                  </p>
-                  <p className="text-gray-600 leading-relaxed text-[11px]">
-                    {guide.propertyNote}
-                  </p>
-                  <div className="mt-2 pt-2 border-t border-gray-200/60 text-[10px] text-gray-400 truncate" title={rac?.area.join(", ")}>
-                    Wilayah: {rac ? rac.area.slice(0, 4).join(", ") + "..." : "Nasional"}
-                  </div>
-                </div>
-              </div>
-
-              {/* Pitching Tips Banner */}
-              <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/60 border border-blue-200/80 rounded-xl p-3 text-xs flex items-start gap-2.5">
-                <Sparkles className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-extrabold text-blue-900 block text-xs">
-                    Poin Keunggulan Bank untuk Disampaikan ke Nasabah:
-                  </span>
-                  <p className="text-blue-800 text-[11px] mt-0.5 leading-relaxed">
-                    "{guide.sellingPoints}"
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          <AmortizationTable
+            yearlySchedule={result.yearlySchedule}
+            masaFix={product.masaFix}
+          />
         </div>
       )}
     </div>
