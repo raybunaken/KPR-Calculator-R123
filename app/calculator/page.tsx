@@ -8,7 +8,9 @@ import {
   PiggyBank,
   Scale,
   SlidersHorizontal,
+  BookOpen,
 } from "lucide-react";
+import RacModal from "@/components/calculator/RacModal";
 import Link from "next/link";
 import LoanForm from "@/components/calculator/LoanForm";
 import SimulationResults from "@/components/calculator/SimulationResults";
@@ -49,6 +51,7 @@ const racList: BankRAC[] = bankData.rac as BankRAC[];
 export default function CalculatorPage() {
   const [loanInput, setLoanInput] = useState<LoanInput | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [showRacModal, setShowRacModal] = useState(false);
 
   const results = useMemo<SimulationResult[]>(() => {
     if (!loanInput) return [];
@@ -95,12 +98,21 @@ export default function CalculatorPage() {
               <Rumah123Logo withTagline={true} />
             </Link>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {loanInput && (
-              <span className="text-xs text-gray-400 font-medium">
+              <span className="text-xs text-gray-400 font-medium hidden sm:inline">
                 {results.filter((r) => r.isEligible).length} opsi eligible
               </span>
             )}
+            <button
+              type="button"
+              onClick={() => setShowRacModal(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-700 to-[#0B2545] text-white hover:opacity-95 transition-all shadow-xs cursor-pointer"
+              title="Buka contekan syarat RAC & kebijakan 15 bank mitra"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-blue-200" />
+              <span>Kamus RAC Bank</span>
+            </button>
             <Link
               href="/admin/products"
               className="text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors flex items-center gap-1.5"
@@ -139,6 +151,12 @@ export default function CalculatorPage() {
           </div>
         </div>
       </div>
+
+      <RacModal
+        isOpen={showRacModal}
+        racList={racList}
+        onClose={() => setShowRacModal(false)}
+      />
     </div>
   );
 }
