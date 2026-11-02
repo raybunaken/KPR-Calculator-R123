@@ -1,4 +1,4 @@
-﻿import type { BankRAC } from "./types";
+import type { BankRAC } from "./types";
 
 export interface BankDetailedRAC {
   penghasilan: {
@@ -725,16 +725,16 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
     },
   },
   Ganesha: {
-    keunggulan: "Ready Dana Take Over dengan pendekatan verifikasi kredit yang sangat personal, komunikatif, dan solutif.",
+    keunggulan: "PROMO: Free Appraisal. Suku bunga baru per 01 November 2026. Ready Dana Take Over dengan opsi bebas penalti dan skema berjenjang 20 tahun.",
     minIncomeKaryawanText: "Rp 10.000.000 / bln",
     minIncomePengusahaText: "Rp 25.000.000 / bln",
     karyawanNote: "Hanya Karyawan Tetap & Pengusaha.",
     usahaNote: "Min. Income Pengusaha Rp 25 Jt.",
-    takeOverNote: "Plafon TO mulai Rp 100 Jt (sangat bersahabat untuk take over plafon kecil). Bank siap talangi pelunasan.",
-    propertyNote: "Sertifikat SHM / SHGB aktif, jalan muat mobil.",
+    takeOverNote: "Plafon TO mulai Rp 100 Jt. Bank siap talangi pelunasan (Ready Dana). Tersedia opsi Bebas Penalti Pelunasan.",
+    propertyNote: "Sertifikat SHM / SHGB aktif, jalan muat mobil. Promo Free Appraisal.",
     areaCoverNote: "Jabodetabek dan Jawa Timur.",
-    personaNasabah: "Nasabah take over plafon Rp 100-300 Jt yang butuh fasilitas Ready Dana dan komunikasi fleksibel dengan pihak bank.",
-    sellingPoints: "Ready Dana Take Over mulai Rp 100 Jt, penanganan kredit personal dan fleksibel.",
+    personaNasabah: "Nasabah take over plafon Rp 100-300 Jt yang butuh fasilitas Ready Dana, opsi bebas penalti, atau bunga berjenjang panjang.",
+    sellingPoints: "Free Appraisal, Ready Dana Take Over mulai Rp 100 Jt, opsi bebas penalti take over, dan skema berjenjang 20 tahun.",
     detail: {
       penghasilan: {
         gajiKaryawan: "Minimal Rp 10.000.000 / bulan.",
@@ -748,26 +748,26 @@ export const BANK_TACTICAL_GUIDES: Record<string, BankTacticalGuide> = {
         skemaReadyDana: "Ready Dana Take Over: Bank Ganesha memfasilitasi pelunasan langsung ke bank lama.",
         minPlafondTO: "Rp 100.000.000 (Sangat ramah untuk take over plafon menengah-kecil).",
         minSisaTenor: "Minimal 12 bulan sisa pinjaman.",
-        opsiTopUp: "Tersedia opsi top up dana tunai.",
+        opsiTopUp: "Tersedia opsi top up dana tunai. Promo Free Appraisal.",
         ketentuanBankAsal: "Bank umum terpercaya.",
       },
       agunan: {
         aksesJalan: "Lebar jalan minimal muat mobil.",
-        jenisSertifikat: "SHM atau SHGB.",
-        dokumenBangunan: "IMB / PBG lengkap.",
+        jenisSertifikat: "SHM atau SHGB (Tersedia juga Agunan BPKB Mobil untuk Multiguna).",
+        dokumenBangunan: "IMB / PBG lengkap. Promo Free Appraisal.",
         batasanLokasi: "Jabodetabek dan Jawa Timur (Surabaya sekitarnya).",
         wilayahCover: ["Jabodetabek", "Jawa Timur"],
       },
       finansial: {
         dpMinimal: "Mulai dari 10%.",
-        skemaBunga: "Suku bunga kompetitif dengan pendekatan kredit personal.",
-        penaltiPelunasan: "Penalti standar berlaku.",
+        skemaBunga: "Update 01 Nov 2026: Fix 3 th (5.5%), Fix 5 th (6.5%), Berjenjang 20 th (5.25%-13%), Take Over (6.99%-8.99%), Multiguna 9.99% (Sertifikat) & 11% (BPKB Mobil). Free Appraisal!",
+        penaltiPelunasan: "Tersedia opsi skema Take Over Bebas Penalti (Free Penalti 7.99% 2th & 8.99% 3th) dan skema standar dengan penalti.",
         maksimalTenor: "Hingga 15-20 tahun.",
       },
       telemarketing: {
-        keunggulanUtama: "Ready Dana tersedia mulai plafon kecil Rp 100 Juta dengan tim analis yang sangat komunikatif.",
-        personaIdeal: "Nasabah yang sisa hutangnya di bawah Rp 300 Juta dan butuh fasilitas Ready Dana.",
-        pitchingScript: "'Pak/Bu, kalau di bank lain minimal ready dana harus Rp 250 Jt - Rp 500 Jt, di Bank Ganesha plafon Rp 100 Jt pun sudah siap ditalangi pelunasannya oleh bank.'",
+        keunggulanUtama: "Promo Free Appraisal, Ready Dana mulai plafon kecil Rp 100 Juta, dan opsi take over bebas penalti.",
+        personaIdeal: "Nasabah yang sisa hutangnya di bawah Rp 300 Juta dan butuh fasilitas Ready Dana atau bebas penalti.",
+        pitchingScript: "'Pak/Bu, di Bank Ganesha ada promo Free Appraisal dan fasilitas ready dana mulai Rp 100 Juta. Selain itu, ada opsi take over bebas penalti pelunasan dipercepat.'",
         pantangan: "Karyawan kontrak atau nasabah dengan gaji di bawah Rp 10 Juta.",
       },
     },
