@@ -100,7 +100,6 @@ export default function SimulationResults({
   const [selectedBank, setSelectedBank] = useState<string>("all");
   const [selectedScheme, setSelectedScheme] = useState<string>("all");
   const [selectedRacFilter, setSelectedRacFilter] = useState<string>("all");
-  const [selectedUpdatePeriod, setSelectedUpdatePeriod] = useState<string>("all");
   const [showRacModal, setShowRacModal] = useState(false);
   const [racModalBank, setRacModalBank] = useState<string | null>(null);
   const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
@@ -146,14 +145,6 @@ export default function SimulationResults({
       });
     }
 
-    if (selectedUpdatePeriod === "nov_2026") {
-      const nov1 = new Date(2026, 10, 1).getTime();
-      list = list.filter((r) => parseDateScore(r.product.updatedAt) >= nov1);
-    } else if (selectedUpdatePeriod === "recent_30") {
-      const oct1 = new Date(2026, 9, 1).getTime();
-      list = list.filter((r) => parseDateScore(r.product.updatedAt) >= oct1);
-    }
-
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(
@@ -194,7 +185,6 @@ export default function SimulationResults({
     selectedBank,
     selectedScheme,
     selectedRacFilter,
-    selectedUpdatePeriod,
     racList,
   ]);
 
@@ -263,14 +253,10 @@ export default function SimulationResults({
               <select
                 value={sortKey}
                 onChange={(e) => setSortKey(e.target.value as SortKey)}
-                className={`text-xs font-semibold border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 cursor-pointer shadow-2xs transition-all ${
-                  sortKey === "updated_desc"
-                    ? "border-emerald-500 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-500/30 font-bold"
-                    : "border-gray-200 bg-gray-50/80 text-gray-700 focus:ring-[#0B2545]/20 focus:border-[#0B2545]"
-                }`}
+                className="text-xs font-semibold border border-gray-200 bg-gray-50/80 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 focus:border-[#0B2545] cursor-pointer shadow-2xs"
               >
                 <option value="cicilan_fix">Cicilan Fix Terendah</option>
-                <option value="updated_desc">Update Bunga Terbaru (Nov 2026)</option>
+                <option value="updated_desc">Update Terbaru</option>
                 <option value="total_all">Total Bayar Terhemat (Lifetime)</option>
                 {input.kprType === "Take Over" && (
                   <option value="savings">Penghematan Terbesar</option>
@@ -282,7 +268,7 @@ export default function SimulationResults({
           </div>
         </div>
 
-        {/* Row 2: Filter Bank + Filter Skema + Filter RAC Profil + Filter Update + Active Bunga Badge + Reset */}
+        {/* Row 2: Filter Bank + Filter Skema + Filter RAC Profil + Active Bunga Badge + Reset */}
         <div className="pt-2.5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2.5 text-xs">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-semibold text-gray-500 shrink-0">
@@ -330,56 +316,6 @@ export default function SimulationResults({
               <option value="dp5">DP Ringan (5%)</option>
             </select>
 
-            {/* Filter Waktu Update Dropdown */}
-            <select
-              value={selectedUpdatePeriod}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSelectedUpdatePeriod(val);
-                if (val !== "all") {
-                  setSortKey("updated_desc");
-                }
-              }}
-              className={`text-xs font-semibold border rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 cursor-pointer shadow-2xs transition-all ${
-                selectedUpdatePeriod !== "all"
-                  ? "border-emerald-500 bg-emerald-50 text-emerald-800 font-bold ring-1 ring-emerald-500"
-                  : "border-gray-200 bg-white text-gray-700 focus:ring-[#0B2545]"
-              }`}
-              title="Filter program berdasarkan waktu update bunga bank"
-            >
-              <option value="all">Semua Waktu Update</option>
-              <option value="recent_30">Update Terbaru (Okt • Nov 2026)</option>
-              <option value="nov_2026">Update Nov 2026 (Ganesha)</option>
-            </select>
-
-            {/* Quick Button Toggle: Urutkan Update Terbaru */}
-            <button
-              type="button"
-              onClick={() =>
-                setSortKey((prev) =>
-                  prev === "updated_desc" ? "cicilan_fix" : "updated_desc",
-                )
-              }
-              className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs shrink-0 ${
-                sortKey === "updated_desc"
-                  ? "bg-emerald-600 text-white border-emerald-700 ring-2 ring-emerald-500/20 font-bold"
-                  : "bg-white text-gray-700 border-gray-200 hover:border-emerald-400 hover:text-emerald-700"
-              }`}
-              title="Klik untuk langsung mengurutkan dari suku bunga bank yang paling baru diupdate"
-            >
-              <Clock
-                className={`w-3.5 h-3.5 ${
-                  sortKey === "updated_desc" ? "text-white" : "text-emerald-600"
-                }`}
-              />
-              <span>Urutkan: Update Terbaru</span>
-              {sortKey === "updated_desc" && (
-                <span className="text-[10px] bg-emerald-700 px-1 py-0.5 rounded text-white font-bold leading-none">
-                  Aktif
-                </span>
-              )}
-            </button>
-
             {/* Active Bunga Range Badge */}
             {input.rateRange && input.rateRange !== "all" && (
               <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0 flex items-center gap-1">
@@ -400,7 +336,6 @@ export default function SimulationResults({
             {(selectedBank !== "all" ||
               selectedScheme !== "all" ||
               selectedRacFilter !== "all" ||
-              selectedUpdatePeriod !== "all" ||
               sortKey !== "cicilan_fix" ||
               searchQuery.trim() !== "") && (
               <button
@@ -409,7 +344,6 @@ export default function SimulationResults({
                   setSelectedBank("all");
                   setSelectedScheme("all");
                   setSelectedRacFilter("all");
-                  setSelectedUpdatePeriod("all");
                   setSortKey("cicilan_fix");
                   setSearchQuery("");
                 }}
@@ -466,7 +400,6 @@ export default function SimulationResults({
                   setSelectedBank("all");
                   setSelectedScheme("all");
                   setSelectedRacFilter("all");
-                  setSelectedUpdatePeriod("all");
                   setSortKey("cicilan_fix");
                   setSearchQuery("");
                 }}
